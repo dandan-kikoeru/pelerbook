@@ -12,8 +12,7 @@
     </div>
     <Dropdown
       class="fixed right-2 top-20"
-      v-show="showDropdown"
-      id="dropdown"
+      v-if="showDropdown"
     />
   </div>
 </template>

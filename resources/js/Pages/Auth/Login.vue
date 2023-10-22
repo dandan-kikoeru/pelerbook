@@ -4,7 +4,8 @@
     <div class="text-center mb-16">
       <h1 class="text-6xl text-blue-500 font-semibold">pelerbook</h1>
       <p class="max-w-xs mt-8 text-lg">
-        Pelerbook helps you connect your peler and share it with other people's peler.
+        Pelerbook helps you connect your peler and share it with other people's
+        peler.
       </p>
     </div>
     <form @submit.prevent="submit">
@@ -62,12 +63,6 @@
   <p v-if="form.errors.messages">
     {{ form.errors.messages }}
   </p>
-  <div
-    class="fixed top-0 left-2/4 -translate-x-2/4"
-    v-if="form.errors.showRegister"
-  >
-    <Register />
-  </div>
 </template>
 <script>
 export default {
@@ -76,7 +71,6 @@ export default {
 </script>
 <script setup>
 import { useForm } from "@inertiajs/vue3";
-import Register from "./Register.vue";
 
 const form = useForm({
   email: "",
