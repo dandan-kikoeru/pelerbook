@@ -4,23 +4,23 @@ import { InertiaProgress } from "@inertiajs/progress";
 import Layout from "./Shared/Layout.vue";
 
 createInertiaApp({
-    resolve: (name) => {
-        const pages = import.meta.glob("./Pages/**/*.vue", { eager: true });
-        let page = pages[`./Pages/${name}.vue`];
-        if (page.default.layout === undefined) {
-            page.default.layout = Layout;
-        }
-        return page;
-    },
-    setup({ el, App, props, plugin }) {
-        createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .component("Link", Link)
-            .component("Head", Head)
-            .mount(el);
-    },
-    progress: {
-        color: "#641ae6",
-    },
-    title: (title) => "App" + title,
+  resolve: (name) => {
+    const pages = import.meta.glob("./Pages/**/*.vue", { eager: true });
+    let page = pages[`./Pages/${name}.vue`];
+    if (page.default.layout === undefined) {
+      page.default.layout = Layout;
+    }
+    return page;
+  },
+  setup({ el, App, props, plugin }) {
+    createApp({ render: () => h(App, props) })
+      .use(plugin)
+      .component("Link", Link)
+      .component("Head", Head)
+      .mount(el);
+  },
+  progress: {
+    color: "#641ae6",
+  },
+  title: (title) => "Pelerbook" + title,
 });

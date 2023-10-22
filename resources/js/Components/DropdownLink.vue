@@ -1,0 +1,14 @@
+<template>
+  <Link class="w-full text-start hover:bg-[#3a3b3c] p-2 rounded-md">
+    <span class="material-symbols-outlined align-middle">{{ icon }}</span>
+    <span class="align-text-top ml-2">{{ label }}</span>
+  </Link>
+</template>
+<script>
+export default {
+  props: {
+    icon: String,
+    label: String,
+  },
+};
+</script>

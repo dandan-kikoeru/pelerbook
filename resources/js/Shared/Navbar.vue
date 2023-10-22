@@ -1,31 +1,40 @@
 <template>
-  <div class="navbar bg-[#242526] border-b border-[#38393a]">
+  <div class="navbar bg-[#242526] border-b border-[#38393a] fixed">
     <div class="flex-1">
-      <a class="btn btn-ghost normal-case text-xl">pelerbook</a>
+      <Link href="/" class="btn btn-ghost normal-case text-xl">pelerbook</Link>
     </div>
     <div class="flex-none gap-2">
-      <div class="dropdown dropdown-end">
-        <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-          <div class="w-10 rounded-full">
-            <img src="guest.png" />
-          </div>
-        </label>
-        <ul
-          tabindex="0"
-          class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
-        >
-          <li>
-            <a class="justify-between">
-              Profile
-              <span class="badge">New</span>
-            </a>
-          </li>
-          <li><a>Settings</a></li>
-          <li><Link href="/logout" as="button" method="post"><span class="material-symbols-outlined">
-            logout
-            </span>Log out</Link></li>
-        </ul>
-      </div>
+      <label class="btn btn-ghost btn-circle avatar" @click="toggleDropdown">
+        <div class="w-10 rounded-full">
+          <img src="guest.png" />
+        </div>
+      </label>
     </div>
+    <Dropdown
+      class="fixed right-2 top-20"
+      v-show="showDropdown"
+      id="dropdown"
+    />
   </div>
 </template>
+
+<script setup>
+import { ref } from "vue";
+import Dropdown from "./Dropdown.vue";
+
+const showDropdown = ref(false);
+
+const handleClick = () => {
+  toggleDropdown();
+};
+
+const toggleDropdown = () => {
+  showDropdown.value = !showDropdown.value;
+  if (!showDropdown.value) {
+    return document.removeEventListener("click", handleClick);
+  }
+  setTimeout(() => {
+    document.addEventListener("click", handleClick);
+  }, 100);
+};
+</script>

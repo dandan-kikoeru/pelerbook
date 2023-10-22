@@ -1,6 +1,6 @@
 <template>
   <Navbar />
-  <section>
+  <section class="pt-16">
     <slot />
   </section>
 </template>

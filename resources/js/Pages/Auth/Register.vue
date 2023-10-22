@@ -1,11 +1,10 @@
 <template>
-  <!-- <Head title=" - Log in or sign up"></Head> -->
+  <Head title=" – Sign up"></Head>
   <div class="flex justify-center items-center min-h-screen flex-col">
     <div class="text-center mb-16">
-      <h1 class="text-6xl text-[#EDC9B9] font-semibold">pelerbook</h1>
+      <h1 class="text-6xl text-blue-500 font-semibold">pelerbook</h1>
       <p class="max-w-xs mt-8 text-lg">
-        Pelerbook helps you connect your peler and share with other people's
-        peler.
+        Pelerbook helps you connect your peler and share with other people's peler.
       </p>
     </div>
     <form @submit.prevent="submit">
