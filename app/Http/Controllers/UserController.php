@@ -41,6 +41,7 @@ class UserController extends Controller
 
   public function logout()
   {
+    sleep(1);
     Auth::logout();
   }
 }

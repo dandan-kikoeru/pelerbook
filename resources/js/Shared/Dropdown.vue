@@ -1,12 +1,12 @@
 <template>
-  <div class="bg-[#232425] rounded-xl p-2">
+  <div class="bg-[#232425] rounded-xl p-2 shadow-lg">
     <ul>
       <li class="w-96">
         <DropdownLink
-          href="/help"
+          :href="'/' + auth.user.id"
           as="button"
           icon="person"
-          label="Profile"
+          :label="auth.user.firstname + ' ' + auth.user.surname"
         />
       </li>
       <li class="w-96">
@@ -31,4 +31,8 @@
 </template>
 <script setup>
 import DropdownLink from "../Components/DropdownLink.vue";
+
+defineProps({
+  auth: Object
+})
 </script>

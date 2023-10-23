@@ -32,38 +32,46 @@ Route::middleware(['auth'])->group(
     Route::post('/logout', [UserController::class, 'logout']);
 
     Route::get('/', function () {
+      sleep(1);
       return Inertia::render('Home', [
-        'users' => User::all()
-          ->map(function ($user) {
-            return [
-              'id' => $user->id,
-              'firstname' => $user->firstname,
-              'surname' => $user->surname,
-            ];
-          }),
-        'auths' => [
-          'id' => Auth::user()->id,
-          'firstname' => Auth::user()->firstname,
-          'surname' => Auth::user()->surname,
-        ],
         'posts' =>
-          Post::with('user')->latest()->get()->map(function ($post) {
-            return [
-              'id' => $post->id,
-              'caption' => $post->caption,
-              'created_at' => $post->created_at->diffForHumans(),
-              'user_id' => $post->user_id,
-              'user' => [
-                'id'=> $post->user->id,
-                'firstname' => $post->user->firstname,
-                'surname'=> $post->user->surname,
-              ]
-            ];
-          }),
+          Post::select('id', 'caption', 'created_at', 'user_id')
+            ->with([
+              'user' => function ($q) {
+                $q->select('id', 'firstname', 'surname');
+              }
+            ])
+            ->latest()
+            ->get()
+            ->map(function ($post) {
+              $post->created_at_human = $post->created_at->diffForHumans();
+              return $post;
+            })
       ]);
     });
 
     Route::post('/store', [PostController::class, 'store']);
+
+    Route::get('/{id}', function ($id) {
+      sleep(1);
+      return Inertia::render('Profile', [
+        'posts' =>
+          Post::where('user_id', $id)
+            ->select('id', 'caption', 'created_at', 'user_id')
+            ->with([
+              'user' => function ($q) {
+                $q->select('id', 'firstname', 'surname');
+              }
+            ])
+            ->latest()
+            ->get()
+            ->map(function ($post) {
+              $post->created_at_human = $post->created_at->diffForHumans();
+              return $post;
+            }),
+        'profileId' => intVal($id),
+      ]);
+    });
 
   }
 );

@@ -13,18 +13,26 @@
     <Dropdown
       class="fixed right-2 top-20"
       v-if="showDropdown"
-    />
+      id="dropdown"
+      :auth="auth"
+      />
   </div>
 </template>
-
 <script setup>
 import { ref } from "vue";
 import Dropdown from "./Dropdown.vue";
 
+defineProps({
+  auth: Object
+})
+
 const showDropdown = ref(false);
 
-const handleClick = () => {
-  toggleDropdown();
+const handleClick = (e) => {
+  const dropdown = document.getElementById("dropdown");
+  if (e.target !== dropdown) {
+    return toggleDropdown();
+  }
 };
 
 const toggleDropdown = () => {

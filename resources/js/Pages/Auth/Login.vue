@@ -1,5 +1,5 @@
 <template>
-  <Head title=" – Log in"></Head>
+  <Head title="Log in | Pelerbook"></Head>
   <div class="flex justify-center items-center min-h-screen flex-col">
     <div class="text-center mb-16">
       <h1 class="text-6xl text-blue-500 font-semibold">pelerbook</h1>

@@ -20,7 +20,6 @@ createInertiaApp({
       .mount(el);
   },
   progress: {
-    color: "#641ae6",
-  },
-  title: (title) => "Pelerbook" + title,
+    color: "#3b82f6",
+  }
 });

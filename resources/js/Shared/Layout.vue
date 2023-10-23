@@ -1,9 +1,12 @@
 <template>
-  <Navbar />
-  <section class="pt-16">
+  <Navbar :auth="auth"/>
+  <section class="bg-[#18191a] text-[#e4e6eb] py-16 min-h-screen">
     <slot />
   </section>
 </template>
 <script setup>
+defineProps({
+  auth: Object,
+});
 import Navbar from "./Navbar.vue";
 </script>
