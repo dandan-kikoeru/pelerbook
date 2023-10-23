@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar bg-[#242526] border-b border-[#38393a] fixed">
+  <div class="navbar bg-[#242526] border-b border-[#38393a] fixed z-30">
     <div class="flex-1">
       <Link href="/" class="btn btn-ghost normal-case text-xl">pelerbook</Link>
     </div>

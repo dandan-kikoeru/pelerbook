@@ -46,9 +46,20 @@ Route::middleware(['auth'])->group(
           'firstname' => Auth::user()->firstname,
           'surname' => Auth::user()->surname,
         ],
-        'posts' => Post::with(['user' => function($query) {
-          $query->select('id', 'firstname', 'surname');
-      }])->latest()->get(),
+        'posts' =>
+          Post::with('user')->latest()->get()->map(function ($post) {
+            return [
+              'id' => $post->id,
+              'caption' => $post->caption,
+              'created_at' => $post->created_at->diffForHumans(),
+              'user_id' => $post->user_id,
+              'user' => [
+                'id'=> $post->user->id,
+                'firstname' => $post->user->firstname,
+                'surname'=> $post->user->surname,
+              ]
+            ];
+          }),
       ]);
     });
 

@@ -3,13 +3,14 @@
     <form @submit.prevent="submit">
       <div class="border-b py-6 border-[#2f3031] flex justify-end">
         <p class="font-bold text-2xl w-full text-center">Create post</p>
-        <Link
-          as="button"
-          class="absolute bg-[#3a3b3c] mr-4 rounded-full hover:bg-[#4e4f50]"
-          ><span class="material-symbols-outlined p-2">close</span></Link
+        <div
+          @click="$emit('close')"
+          class="absolute bg-[#3a3b3c] mr-4 rounded-full hover:bg-[#4e4f50] cursor-pointer"
         >
+          <span class="material-symbols-outlined p-2 select-none">close</span>
+        </div>
       </div>
-      <div class="card-body gap-4">
+      <div class="card-body gap-4 p-4">
         <component
           :is="form.errors.caption ? 'div' : 'div'"
           :class="
@@ -59,4 +60,5 @@ const submit = () => {
 defineProps({
   firstname: String,
 });
+defineEmits(["close"]);
 </script>

@@ -2,42 +2,57 @@
   <Head title=" - Home"></Head>
   <div class="bg-[#242526] h-32 p-4 rounded-lg mt-6 max-w-lg mx-auto">
     <div class="flex gap-4 border-b pb-4 border-[#3a3b3c]">
-      <img src="guest.png" class="w-12 h-12 rounded-full" />
+      <Link class="aspect-square h-12 ">
+        <img src="guest.png" class="rounded-full"/>
+      </Link>
       <button
         @click="showCreatePost"
         class="bg-[#3a3b3c] hover:bg-[#4e4f50] w-full rounded-full px-6 py-3 text-start"
         v-html="`What's on your mind, ` + auths.firstname + `?`"
-      ></button>
+      />
     </div>
   </div>
   <div
-    class="fixed top-0 w-screen h-screen flex justify-center items-center bg-black/50"
+    class="fixed top-0 w-screen h-screen flex justify-center items-center bg-black/50 z-50"
     v-if="createPost"
   >
-    <Create :firstname="auths.firstname" />
+    <CreatePost :firstname="auths.firstname" @close="showCreatePost" />
   </div>
 
-  <div v-for="post in posts" class="border p-4">
-    {{ post.user.firstname }}
-    {{ post.user.surname }}<br><br>
-    {{ post.caption }}
+  <div
+    v-for="post in posts"
+    class="card max-w-lg bg-[#242526] shadow-xl mx-auto mt-4"
+    :key="posts.id"
+  >
+    <Post
+      :id="post.id"
+      :firstname="post.user.firstname"
+      :surname="post.user.surname"
+      :caption="post.caption"
+      :createdAt="post.created_at"
+      :userId="post.user_id"
+    />
   </div>
 </template>
 <script setup>
-import Create from "./Post/Create.vue";
 import { ref } from "vue";
+import CreatePost from "../Shared/CreatePost.vue";
+import Post from "../Shared/Post.vue";
 
 defineProps({
   users: Object,
-  auths: Array,
+  auths: Object,
   posts: Object,
 });
-
-// const test = ref("What's on your mind, {{ auths.firstname }}");
 
 const createPost = ref(false);
 
 const showCreatePost = () => {
   createPost.value = !createPost.value;
+  if (createPost.value) {
+    console.log("enable");
+    return document.body.classList.add("overflow-hidden");
+  }
+  document.body.classList.remove("overflow-hidden");
 };
 </script>

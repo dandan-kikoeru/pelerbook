@@ -4,11 +4,10 @@
     <span class="align-text-top ml-2">{{ label }}</span>
   </Link>
 </template>
-<script>
-export default {
-  props: {
+
+<script setup>
+  defineProps({
     icon: String,
     label: String,
-  },
-};
+  })
 </script>
