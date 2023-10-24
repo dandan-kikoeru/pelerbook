@@ -25,7 +25,7 @@
         more_horiz
       </span>
     </div>
-    <p>{{ caption }}</p>
+    <p v-html="caption"></p>
   </div>
 
   <div
