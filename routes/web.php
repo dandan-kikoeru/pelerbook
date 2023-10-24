@@ -11,13 +11,9 @@ Route::get('/login', function () {
   return Inertia::render('Auth/Login');
 })->name('login');
 
-Route::get('/register', function () {
-  return Inertia::render('Auth/Register');
-})->name('register');
-
 Route::post('/login', [UserController::class, 'login']);
-Route::post('/register', [UserController::class, 'register']);
 
+Route::post('/register', [UserController::class, 'register']);
 
 $japaneseGoblin = ['/recover', '/help', '/about', '/about/terms', '/about/privacy', '/about/cookies'];
 foreach ($japaneseGoblin as $route) {
@@ -73,6 +69,6 @@ Route::middleware(['auth'])->group(
       ]);
     });
 
-    Route::post('/delete/{id}', [PostController::class,'destroy']);
+    Route::post('/delete/{id}', [PostController::class, 'destroy']);
   }
 );

@@ -9,7 +9,7 @@
       </p>
     </div>
     <form @submit.prevent="submit">
-      <div class="card w-96 bg-base-100 shadow-xl">
+      <div class="card w-96 bg-[#242526] shadow-xl">
         <div class="card-body gap-4">
           <component
             :is="form.errors.email ? 'div' : 'div'"
@@ -21,7 +21,7 @@
           <input
             type="text"
             placeholder="Email address"
-            class="input input-bordered w-full max-w-xs"
+            class="input w-full bg-[#18191a] max-w-xs"
             v-model="form.email"
           />
           <component
@@ -34,11 +34,11 @@
           <input
             type="password"
             placeholder="Password"
-            class="input input-bordered w-full max-w-xs"
+            class="input bg-[#18191a] w-full max-w-xs"
             v-model="form.password"
           />
           <div
-            class="card-actions justify-center border-b-2 pb-4 flex-col items-center"
+            class="card-actions justify-center border-b-2 border-[#2f3031] pb-4 flex-col items-center"
           >
             <button
               class="btn btn-info normal-case w-full mt-2"
@@ -50,12 +50,12 @@
               >Forgotten password?</Link
             >
           </div>
-          <Link
-            href="/register"
+          <div
+            @click="toggleRegister"
             class="btn btn-success normal-case w-2/3 mx-auto mt-2"
           >
             Create new account
-          </Link>
+          </div>
         </div>
       </div>
     </form>
@@ -63,6 +63,12 @@
   <p v-if="form.errors.messages">
     {{ form.errors.messages }}
   </p>
+  <div
+    class="fixed top-0 w-screen h-screen bg-black/50 flex justify-center items-center z-50"
+    v-if="showRegister" id="register"
+  >
+    <Register @close="toggleRegister"   />
+  </div>
 </template>
 <script>
 export default {
@@ -71,6 +77,8 @@ export default {
 </script>
 <script setup>
 import { useForm } from "@inertiajs/vue3";
+import Register from "./Register.vue";
+import { ref } from "vue";
 
 const form = useForm({
   email: "",
@@ -79,5 +87,24 @@ const form = useForm({
 
 const submit = () => {
   form.post("/login");
+};
+
+const showRegister = ref(false);
+
+const handleClick = (e) => {
+  const register = document.getElementById("register");
+  if (e.target == register) {
+    return toggleRegister();
+  }
+};
+
+const toggleRegister = () => {
+  showRegister.value = !showRegister.value;
+  if (!showRegister.value) {
+    return document.removeEventListener("click", handleClick);
+  }
+  setTimeout(() => {
+    document.addEventListener("click", handleClick);
+  }, 100);
 };
 </script>
