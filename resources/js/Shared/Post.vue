@@ -43,7 +43,8 @@
     </Link>
     <Link
       class="text-start hover:bg-[#3a3b3c] p-2 rounded-md w-80 flex"
-      href=""
+      method="post"
+      :href="'/delete/'+id"
       as="button"
     >
       <span class="material-symbols-outlined align-middle">delete</span>

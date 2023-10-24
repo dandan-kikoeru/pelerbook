@@ -73,5 +73,6 @@ Route::middleware(['auth'])->group(
       ]);
     });
 
+    Route::post('/delete/{id}', [PostController::class,'destroy']);
   }
 );

@@ -18,4 +18,13 @@ class PostController extends Controller
     Post::create($post);
     return Inertia::location('/');
   }
+
+  public function destroy(Post $id)
+  {
+    if (Auth()->user()->id = $id->user_id) {
+      $id->delete();
+      return redirect('/');
+    }
+    return abort(404);
+  }
 }
