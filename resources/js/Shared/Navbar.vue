@@ -6,7 +6,7 @@
     <div class="flex-none gap-2">
       <label class="btn btn-ghost btn-circle avatar" @click="toggleDropdown">
         <div class="w-10 rounded-full">
-          <img src="guest.png" />
+          <img src="/avatars/guest.png" />
         </div>
       </label>
     </div>

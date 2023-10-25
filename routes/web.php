@@ -3,6 +3,7 @@
 use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Services\Formatting;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -25,10 +26,12 @@ foreach ($japaneseGoblin as $route) {
 
 Route::middleware(['auth'])->group(
   function () {
-
     Route::post('/logout', [UserController::class, 'logout']);
     Route::redirect('/home', '/');
 
+    /**
+     * Home
+     */
     Route::get('/', function () {
       sleep(1);
       $posts = Post::latest()
@@ -40,7 +43,7 @@ Route::middleware(['auth'])->group(
         ->get()
         ->map(function ($post) {
           $post->created_at_human = $post->created_at->diffForHumans();
-          $post->caption = nl2br($post->caption);
+          $post->caption = Formatting::format_message($post->caption);
           return $post;
         });
       return Inertia::render('Home', [
@@ -50,8 +53,17 @@ Route::middleware(['auth'])->group(
 
     Route::post('/store', [PostController::class, 'store']);
 
-    Route::get('/{id}', function ($id) {
+    /**
+     * Profile
+     */
+
+    Route::get('/{id}', function ($id, User $user) {
       sleep(1);
+      $user = User::find($id);
+
+      if (!$user) {
+        return abort(404);
+      }
       return Inertia::render('Profile', [
         'posts' =>
           Post::where('user_id', $id)
@@ -65,12 +77,41 @@ Route::middleware(['auth'])->group(
             ->get()
             ->map(function ($post) {
               $post->created_at_human = $post->created_at->diffForHumans();
+              $post->caption = Formatting::format_message($post->caption);
               return $post;
             }),
-        'profileId' => intVal($id),
+        'profile' => [
+          'id' => $user->id,
+          'firstname' => $user->firstname,
+          'surname' => $user->surname,
+        ]
       ]);
     });
 
     Route::post('/delete/{id}', [PostController::class, 'destroy']);
+
+    Route::get(
+      '/post/{id}',
+      function ($id) {
+        sleep(1);
+
+        $post = Post::find($id);
+        if (!$post) {
+          return abort(404);
+        }
+
+        return Inertia::render('SinglePost', [
+          'post' => Post::where('id', $id)
+            ->with('user')
+            ->latest()
+            ->get()
+            ->map(function ($post) {
+              $post->created_at_human = $post->created_at->diffForHumans();
+              $post->caption = Formatting::format_message($post->caption);
+              return $post;
+            }),
+        ]);
+      }
+    );
   }
 );

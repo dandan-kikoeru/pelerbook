@@ -4,16 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
   public function store(Request $request)
   {
-    $post = $request->validate([
+    $request->validate([
       'caption' => 'required',
     ]);
-    $post['user_id'] = Auth()->user()->id;
+    $post = [
+      'user_id' => Auth()->user()->id,
+      'id' => Str::random(16),
+      'caption' => $request->caption
+    ];
 
     Post::create($post);
     return Inertia::location('/');
@@ -23,8 +28,9 @@ class PostController extends Controller
   {
     if (Auth()->user()->id = $id->user_id) {
       $id->delete();
-      return redirect('/');
+      return back();
     }
     return abort(404);
   }
+
 }

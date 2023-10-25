@@ -11,7 +11,7 @@ return new class extends Migration {
   public function up(): void
   {
     Schema::create('posts', function (Blueprint $table) {
-      $table->id();
+      $table->string('id', 16)->primary();
       $table->timestamps();
       $table->longText('caption');
       $table->foreignId('user_id')->constrained();

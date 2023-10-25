@@ -9,9 +9,11 @@ class Post extends Model
 {
   use HasFactory;
 
+  public $incrementing = false;
   protected $fillable = [
+    'id',
     "caption",
-    "user_id"
+    "user_id",
   ];
 
 

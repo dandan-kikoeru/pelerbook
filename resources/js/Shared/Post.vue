@@ -1,23 +1,23 @@
 <template>
   <div class="card-body p-4">
     <div class="flex gap-2">
-      <Link :href="'/' + userId">
-        <img src="guest.png" class="w-12 h-12 rounded-full cursor-pointer" />
+      <Link :href="'/' + post.user.id">
+        <img src="/avatars/guest.png" class="w-12 h-12 rounded-full cursor-pointer" />
       </Link>
       <div>
         <Link
-          :href="'/' + userId"
+          :href="'/' + post.user.id"
           class="w-fit text-lg font-semibold hover:underline"
         >
-          {{ firstname }} {{ surname }} </Link
+          {{ post.user.firstname }} {{ post.user.surname }} </Link
         ><br />
-        <Link :href="'/posts/' + id" class="hover:underline text-sm">
-          {{ createdAt }}
+        <Link :href="'/post/' + post.id" class="hover:underline text-sm">
+          {{ post.created_at_human }}
         </Link>
       </div>
     </div>
     <div
-      v-if="userId == authId"
+      v-if="post.user.id == auth.user.id"
       @click="togglePopup"
       class="absolute right-4 hover:bg-[#3a3b3c] rounded-full cursor-pointer"
     >
@@ -25,7 +25,7 @@
         more_horiz
       </span>
     </div>
-    <p v-html="caption"></p>
+    <p v-html="post.caption" class="break-all"></p>
   </div>
 
   <div
@@ -44,8 +44,9 @@
     <Link
       class="text-start hover:bg-[#3a3b3c] p-2 rounded-md w-80 flex"
       method="post"
-      :href="'/delete/'+id"
+      :href="'/delete/'+post.id"
       as="button"
+      preserve-scroll
     >
       <span class="material-symbols-outlined align-middle">delete</span>
       <span class="align-text-top ml-2">Delete post</span>
@@ -55,13 +56,8 @@
 <script setup>
 import { ref } from "vue";
 defineProps({
-  firstname: String,
-  surname: String,
-  caption: String,
-  createdAt: String,
-  id: Number,
-  userId: Number,
-  authId: Number
+  post: Object,
+  auth: Object
 });
 
 const test = ref(false);

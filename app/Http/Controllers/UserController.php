@@ -14,7 +14,7 @@ class UserController extends Controller
     sleep(2);
     $credentials = $request->validate([
       "email" => ['required'],
-      "password" => 'required',
+      "password" => ['required', 'min:8'],
     ]);
 
     if (Auth::attempt($credentials)) {
@@ -32,7 +32,7 @@ class UserController extends Controller
       'firstname' => ['required', 'regex:/^[A-Za-z]+$/'],
       'surname' => ['required', 'regex:/^[A-Za-z]+$/'],
       'email' => ['required', 'email', Rule::unique('users', 'email')],
-      'password' => ['required']
+      'password' => ['required', 'min:8']
     ]);
     $user = User::create($credentials);
     Auth::login($user);
