@@ -8,7 +8,7 @@
   >
     <div class="flex gap-4 border-b pb-4 border-[#3a3b3c]">
       <Link class="aspect-square h-12" :href="'/' + auth.user.id">
-        <img src="guest.png" class="rounded-full" />
+        <img src="/avatars/guest.png" class="rounded-full" />
       </Link>
       <button
         @click="showCreatePost"

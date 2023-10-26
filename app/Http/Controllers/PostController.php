@@ -17,18 +17,27 @@ class PostController extends Controller
     $post = [
       'user_id' => Auth()->user()->id,
       'id' => Str::random(16),
-      'caption' => $request->caption
+      'caption' => strip_tags($request->caption)
     ];
-
     Post::create($post);
-    return Inertia::location('/');
+    return Inertia::location('/post/' . $post['id']);
+  }
+
+  public function update(Request $request, Post $id)
+  {
+    $post = $request->validate([
+      'caption' => 'required',
+    ]);
+    $post['caption'] = strip_tags($post['caption']);
+    $id->update($post);
+    return Inertia::location('/post/' . $id->id);
   }
 
   public function destroy(Post $id)
   {
     if (Auth()->user()->id = $id->user_id) {
       $id->delete();
-      return back();
+      return Inertia::location('/');
     }
     return abort(404);
   }

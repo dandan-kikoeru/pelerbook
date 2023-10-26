@@ -89,6 +89,7 @@ Route::middleware(['auth'])->group(
     });
 
     Route::post('/delete/{id}', [PostController::class, 'destroy']);
+    Route::post('/edit/{id}', [PostController::class,'update']);
 
     Route::get(
       '/post/{id}',
@@ -102,7 +103,9 @@ Route::middleware(['auth'])->group(
 
         return Inertia::render('SinglePost', [
           'post' => Post::where('id', $id)
-            ->with('user')
+            ->with(['user' => function($q) {
+              $q->select('id','firstname','surname');
+            }])
             ->latest()
             ->get()
             ->map(function ($post) {
