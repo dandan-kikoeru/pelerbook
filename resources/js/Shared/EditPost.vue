@@ -51,6 +51,7 @@ import { useForm } from "@inertiajs/vue3";
 
 const post = defineProps(["post"]);
 
+// create a JavaScript function that removes HTML tags and reverts the formatting back to the original format
 const revertFormatting = (htmlString) => {
   let revertedString = htmlString.replace(/<b>(.*?)<\/b>/g, "*$1*");
   revertedString = revertedString.replace(/<i>(.*?)<\/i>/g, "_$1_");
@@ -60,13 +61,10 @@ const revertFormatting = (htmlString) => {
     /<a class="text-blue-500 hover:underline" href="(.*?)" target="_blank">(.*?)<\/a>/g,
     "$1"
   );
-
   revertedString = revertedString.replace(/&#x(.*?);/g, function (match, p1) {
     return `\\u${p1}`;
   });
-
   revertedString = revertedString.replace(/<\/?[^>]+(>|$)/g, "");
-
   return revertedString;
 };
 
