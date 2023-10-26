@@ -20,7 +20,7 @@
         ></component>
         <textarea
           name="caption"
-          :placeholder="post.post.caption"
+          :placeholder="revertFormatting(post.post.caption)"
           v-model="form.caption"
           autofocus
           class="bg-transparent outline-none resize-none h-80"
@@ -48,7 +48,9 @@ export default {
 </script>
 <script setup>
 import { useForm } from "@inertiajs/vue3";
+
 const post = defineProps(["post"]);
+
 const revertFormatting = (htmlString) => {
   let revertedString = htmlString.replace(/<b>(.*?)<\/b>/g, "*$1*");
   revertedString = revertedString.replace(/<i>(.*?)<\/i>/g, "_$1_");
@@ -59,16 +61,15 @@ const revertFormatting = (htmlString) => {
     "$1"
   );
 
-  // Revert unicode characters
   revertedString = revertedString.replace(/&#x(.*?);/g, function (match, p1) {
     return `\\u${p1}`;
   });
 
-  // Remove any remaining HTML tags
   revertedString = revertedString.replace(/<\/?[^>]+(>|$)/g, "");
 
   return revertedString;
 };
+
 const form = useForm({
   caption: revertFormatting(post.post.caption),
 });
