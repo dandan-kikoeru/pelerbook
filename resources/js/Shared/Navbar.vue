@@ -1,12 +1,12 @@
 <template>
-  <div class="navbar bg-[#242526] border-b border-[#38393a] fixed z-30">
+  <div class="navbar bg-[#242526] border-b border-[#38393a] z-30">
     <div class="flex-1">
       <Link href="/" class="btn btn-ghost normal-case text-xl">pelerbook</Link>
     </div>
     <div class="flex-none gap-2">
       <label class="btn btn-ghost btn-circle avatar" @click="toggleDropdown">
         <div class="w-10 rounded-full">
-          <img src="/avatars/guest.png" />
+          <img :src="auth.user.avatar" />
         </div>
       </label>
     </div>

@@ -1,5 +1,5 @@
 <template>
-  <Navbar :auth="auth"/>
+  <Navbar :auth="auth" class="fixed"/>
   <section class="bg-[#18191a] text-[#e4e6eb] py-16 min-h-screen">
     <slot />
   </section>

@@ -3,8 +3,8 @@
     <div class="flex gap-2">
       <Link :href="'/' + post.user.id">
         <img
-          src="/avatars/guest.png"
-          class="w-12 h-12 rounded-full cursor-pointer"
+          :src="post.user.avatar"
+          class="w-12 h-12 rounded-full cursor-pointer object-cover"
         />
       </Link>
       <div>

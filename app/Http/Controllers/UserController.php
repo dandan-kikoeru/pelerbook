@@ -44,4 +44,33 @@ class UserController extends Controller
     sleep(1);
     Auth::logout();
   }
+
+  public function update(Request $request)
+  {
+    sleep(1);
+    $user = Auth()->user();
+    $request->validate([
+      'firstname' => ['required', 'regex:/^[A-Za-z]+$/'],
+      'surname' => ['required', 'regex:/^[A-Za-z]+$/'],
+    ]);
+
+    if ($request->deleteAvatar) {
+      $user->avatar = "/avatars/guest.png";
+    }
+
+    elseif ($request->file('avatar')) {
+      $request->validate([
+        'avatar' => ['mimes:jpeg,png,jpg,gif,webp', 'max:2048']
+      ]);
+      $imageName = $user->id . '.' . $request->file('avatar')->extension();
+      $request->file('avatar')->move(public_path('avatars'), $imageName);
+      $user->avatar = 'avatars/' . $imageName;
+    }
+
+    $user->firstname = $request->firstname;
+    $user->surname = $request->surname;
+    $user->save();
+    return redirect('/');
+
+  }
 }

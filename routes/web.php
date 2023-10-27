@@ -33,11 +33,10 @@ Route::middleware(['auth'])->group(
      * Home
      */
     Route::get('/', function () {
-      sleep(1);
       $posts = Post::latest()
         ->with([
           'user' => function ($q) {
-            $q->select('id', 'firstname', 'surname');
+            $q->select('id', 'firstname', 'surname', 'avatar');
           }
         ])
         ->get()
@@ -52,6 +51,42 @@ Route::middleware(['auth'])->group(
     });
 
     Route::post('/store', [PostController::class, 'store']);
+    Route::get('/settings', function () {
+      sleep(1);
+      return Inertia::render('Settings');
+    });
+    Route::post('settings', [UserController::class, 'update']);
+
+    Route::post('/delete/{id}', [PostController::class, 'destroy']);
+    Route::post('/edit/{id}', [PostController::class, 'update']);
+
+    Route::get(
+      '/post/{id}',
+      function ($id) {
+        sleep(1);
+
+        $post = Post::find($id);
+        if (!$post) {
+          return abort(404);
+        }
+
+        return Inertia::render('SinglePost', [
+          'post' => Post::where('id', $id)
+            ->with([
+              'user' => function ($q) {
+                $q->select('id', 'firstname', 'surname', 'avatar');
+              }
+            ])
+            ->latest()
+            ->get()
+            ->map(function ($post) {
+              $post->created_at_human = $post->created_at->diffForHumans();
+              $post->caption = Formatting::format_message($post->caption);
+              return $post;
+            }),
+        ]);
+      }
+    );
 
     /**
      * Profile
@@ -70,7 +105,7 @@ Route::middleware(['auth'])->group(
             ->select('id', 'caption', 'created_at', 'user_id')
             ->with([
               'user' => function ($q) {
-                $q->select('id', 'firstname', 'surname');
+                $q->select('id', 'firstname', 'surname', 'avatar');
               }
             ])
             ->latest()
@@ -88,33 +123,5 @@ Route::middleware(['auth'])->group(
       ]);
     });
 
-    Route::post('/delete/{id}', [PostController::class, 'destroy']);
-    Route::post('/edit/{id}', [PostController::class,'update']);
-
-    Route::get(
-      '/post/{id}',
-      function ($id) {
-        sleep(1);
-
-        $post = Post::find($id);
-        if (!$post) {
-          return abort(404);
-        }
-
-        return Inertia::render('SinglePost', [
-          'post' => Post::where('id', $id)
-            ->with(['user' => function($q) {
-              $q->select('id','firstname','surname');
-            }])
-            ->latest()
-            ->get()
-            ->map(function ($post) {
-              $post->created_at_human = $post->created_at->diffForHumans();
-              $post->caption = Formatting::format_message($post->caption);
-              return $post;
-            }),
-        ]);
-      }
-    );
   }
 );

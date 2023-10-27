@@ -124,7 +124,6 @@ const form = useForm({
 });
 
 const submit = () => {
-  console.log("submit");
   form.post("/register");
 };
 

@@ -11,7 +11,7 @@
       </li>
       <li class="w-96">
         <DropdownLink
-          href="/help"
+          href="/settings"
           as="button"
           icon="settings"
           label="Settings"
