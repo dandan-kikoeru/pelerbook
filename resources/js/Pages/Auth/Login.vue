@@ -60,15 +60,18 @@
       </div>
     </form>
   </div>
-  <p v-if="form.errors.messages">
-    {{ form.errors.messages }}
-  </p>
+
   <div
     class="fixed top-0 w-screen h-screen bg-black/50 flex justify-center items-center z-50"
     v-if="showRegister"
     id="register"
   >
     <Register @close="toggleRegister" />
+  </div>
+  <div class="toast toast-end" v-if="form.errors.messages">
+    <Toast @close="form.errors.messages = null">
+      {{ form.errors.messages }}
+    </Toast>
   </div>
 </template>
 <script>
@@ -80,6 +83,7 @@ export default {
 import { useForm } from "@inertiajs/vue3";
 import Register from "./Register.vue";
 import { ref } from "vue";
+import Toast from "../../Components/Toast.vue";
 
 const form = useForm({
   email: "",

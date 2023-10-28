@@ -12,9 +12,9 @@ class UserController extends Controller
 {
   public function login(Request $request)
   {
-    sleep(2);
+    sleep(1);
     $credentials = $request->validate([
-      "email" => ['required'],
+      "email" => ['required', 'email'],
       "password" => ['required', 'min:8'],
     ]);
 
@@ -23,7 +23,7 @@ class UserController extends Controller
       return redirect("/");
     }
 
-    return back()->withErrors(['messages' => 'peler']);
+    return back()->withErrors(['messages' => 'Invalid credentials']);
   }
 
   public function register(Request $request)
