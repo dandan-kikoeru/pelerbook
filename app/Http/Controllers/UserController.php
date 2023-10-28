@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Image; // alias of Intervention\Image\ImageServiceProvider::class,
 use Illuminate\Validation\Rule;
@@ -53,7 +52,7 @@ class UserController extends Controller
     $user = Auth()->user();
 
     if ($request->deleteAvatar) {
-      $user->avatar = "/avatars/guest.png";
+      $user->avatar = "/avatars/guest.webp";
       $user->firstname = $request->firstname;
       $user->surname = $request->surname;
       $user->save();
