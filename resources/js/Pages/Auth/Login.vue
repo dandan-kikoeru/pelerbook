@@ -2,8 +2,7 @@
   <Head title="Log in or sign up | Pelerbook"></Head>
   <div class="flex justify-center items-center min-h-screen flex-col">
     <div class="text-center mb-16">
-      <!-- <h1 class="text-6xl text-blue-500 font-semibold">pelerbook</h1> -->
-      <img src="logo.webp" class="max-w-xs">
+      <img :src="'/logo.webp'" class="max-w-xs" />
       <p class="max-w-xs mt-8 text-lg">
         Pelerbook helps you connect your peler and share it with other people's
         peler.
@@ -66,9 +65,10 @@
   </p>
   <div
     class="fixed top-0 w-screen h-screen bg-black/50 flex justify-center items-center z-50"
-    v-if="showRegister" id="register"
+    v-if="showRegister"
+    id="register"
   >
-    <Register @close="toggleRegister"   />
+    <Register @close="toggleRegister" />
   </div>
 </template>
 <script>

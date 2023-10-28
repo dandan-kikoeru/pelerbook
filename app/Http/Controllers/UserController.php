@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -49,16 +50,16 @@ class UserController extends Controller
   {
     sleep(1);
     $user = Auth()->user();
-    $request->validate([
-      'firstname' => ['required', 'regex:/^[A-Za-z]+$/'],
-      'surname' => ['required', 'regex:/^[A-Za-z]+$/'],
-    ]);
 
     if ($request->deleteAvatar) {
       $user->avatar = "/avatars/guest.png";
+      $user->firstname = $request->firstname;
+      $user->surname = $request->surname;
+      $user->save();
+      return redirect('/');
     }
 
-    elseif ($request->file('avatar')) {
+    if ($request->hasFile('avatar')) {
       $request->validate([
         'avatar' => ['mimes:jpeg,png,jpg,gif,webp', 'max:2048']
       ]);
@@ -67,10 +68,16 @@ class UserController extends Controller
       $user->avatar = 'avatars/' . $imageName;
     }
 
+    $request->validate([
+      'firstname' => ['required', 'regex:/^[A-Za-z]+$/'],
+      'surname' => ['required', 'regex:/^[A-Za-z]+$/'],
+    ]);
+
     $user->firstname = $request->firstname;
     $user->surname = $request->surname;
     $user->save();
-    return redirect('/');
 
+    return redirect('/');
   }
+
 }
