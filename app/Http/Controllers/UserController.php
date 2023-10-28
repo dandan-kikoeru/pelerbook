@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Image; // alias of Intervention\Image\ImageServiceProvider::class,
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
@@ -63,9 +64,19 @@ class UserController extends Controller
       $request->validate([
         'avatar' => ['mimes:jpeg,png,jpg,gif,webp', 'max:2048']
       ]);
-      $imageName = $user->id . '.' . $request->file('avatar')->extension();
-      $request->file('avatar')->move(public_path('avatars'), $imageName);
-      $user->avatar = 'avatars/' . $imageName;
+
+      $avatarName = $user->id . '.webp';
+
+      $avatar = Image::make($request->file('avatar'))->encode('webp', 90);
+
+      $avatar
+        ->resize(128, null, function ($constraint) {
+          $constraint->aspectRatio();
+        })
+        ->save(public_path('/avatars/' . $avatarName));
+
+      $user->avatar = '/avatars/' . $avatarName;
+
     }
 
     $request->validate([
