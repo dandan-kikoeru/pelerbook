@@ -28,7 +28,9 @@
         more_horiz
       </span>
     </div>
-    <p v-html="post.caption" class="break-all"></p>
+    <div>
+      <div v-html="post.caption"/>
+    </div>
   </div>
 
   <div
@@ -66,10 +68,7 @@
 import { ref } from "vue";
 import EditPost from "./EditPost.vue";
 
-defineProps({
-  post: Object,
-  auth: Object,
-});
+defineProps(['post', 'auth']);
 
 const showPopup = ref(false);
 

@@ -63,8 +63,6 @@ Route::middleware(['auth'])->group(
     Route::get(
       '/post/{id}',
       function ($id) {
-        sleep(1);
-
         $post = Post::find($id);
         if (!$post) {
           return abort(404);

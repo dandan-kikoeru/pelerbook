@@ -1,6 +1,6 @@
 <template>
   <div class="w-96 bg-[#242526] h-fit rounded-lg border border-[#2f3031]">
-    <form @submit.prevent="() => submit(post.post.id)">
+    <form @submit.prevent="() => submit(post.id)">
       <div class="border-b py-6 border-[#2f3031] flex justify-end">
         <p class="font-bold text-2xl w-full text-center">Edit post</p>
         <div
@@ -20,7 +20,7 @@
         ></component>
         <textarea
           name="caption"
-          :placeholder="revertFormatting(post.post.caption)"
+          :placeholder="revertFormatting(post.caption)"
           v-model="form.caption"
           autofocus
           class="bg-transparent outline-none resize-none h-80"
@@ -49,7 +49,7 @@ export default {
 <script setup>
 import { useForm } from "@inertiajs/vue3";
 
-const post = defineProps(["post"]);
+const { post } = defineProps(["post"]);
 
 // create a JavaScript function that removes HTML tags and reverts the formatting back to the original format
 const revertFormatting = (htmlString) => {
@@ -69,7 +69,7 @@ const revertFormatting = (htmlString) => {
 };
 
 const form = useForm({
-  caption: revertFormatting(post.post.caption),
+  caption: revertFormatting(post.caption),
 });
 
 const submit = (id) => {
