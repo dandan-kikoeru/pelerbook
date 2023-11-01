@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(
     Route::redirect('/home', '/');
 
     /**
-     * Home
+     * * Home
      */
     Route::get('/', function (Request $request) {
 
@@ -57,6 +57,9 @@ Route::middleware(['auth'])->group(
     Route::post('/delete/{id}', [PostController::class, 'destroy']);
     Route::post('/edit/{id}', [PostController::class, 'update']);
 
+    /**
+     * * Post
+     */
     Route::get(
       '/post/{id}',
       function ($id) {
@@ -65,51 +68,49 @@ Route::middleware(['auth'])->group(
           return abort(404);
         }
 
+        $postfilter = Post::where('id', $id)->get();
+
+        // return PostResource::collection($postfilter);
         return Inertia::render('SinglePost', [
-          'post' => Post::where('id', $id)
-            ->with([
-              'user' => function ($q) {
-                $q->select('id', 'firstname', 'surname', 'avatar');
-              }
-            ])
-            ->latest()
-            ->get()
-            ->map(function ($post) {
-              $post->created_at_human = $post->created_at->diffForHumans();
-              $post->caption = Formatting::format_message($post->caption);
-              return $post;
-            }),
+          'post' => PostResource::collection($postfilter),
         ]);
+        // return Inertia::render('SinglePost', [
+        //   'post' => Post::where('id', $id)
+        //     ->with([
+        //       'user' => function ($q) {
+        //         $q->select('id', 'firstname', 'surname', 'avatar');
+        //       }
+        //     ])
+        //     ->latest()
+        //     ->get()
+        //     ->map(function ($post) {
+        //       $post->created_at_human = $post->created_at->diffForHumans();
+        //       $post->caption = Formatting::format_message($post->caption);
+        //       return $post;
+        //     }),
+        // ]);
       }
     );
 
     /**
-     * Profile
+     * * Profile
      */
 
-    Route::get('/{id}', function ($id, User $user) {
-      sleep(1);
+    Route::get('/{id}', function ($id, User $user, Request $request) {
       $user = User::find($id);
+      $posts = Post::where('user_id', $id)->latest()->cursorPaginate(10);
 
       if (!$user) {
         return abort(404);
       }
+
+      if ($request->wantsJson()) {
+        return PostResource::collection($posts);
+      }
+
+      sleep(1);
       return Inertia::render('Profile', [
-        'posts' =>
-          Post::where('user_id', $id)
-            ->select('id', 'caption', 'created_at', 'user_id')
-            ->with([
-              'user' => function ($q) {
-                $q->select('id', 'firstname', 'surname', 'avatar');
-              }
-            ])
-            ->latest()
-            ->get()
-            ->map(function ($post) {
-              $post->created_at_human = $post->created_at->diffForHumans();
-              $post->caption = Formatting::format_message($post->caption);
-              return $post;
-            }),
+        'posts' => PostResource::collection($posts),
         'profile' => [
           'id' => $user->id,
           'firstname' => $user->firstname,

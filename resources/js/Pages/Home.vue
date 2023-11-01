@@ -42,17 +42,16 @@ const { posts, auth } = defineProps({
   posts: Object,
   auth: Object,
 });
-
 const target = ref(null);
 const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
   if (!isIntersecting) {
     return;
   }
+  const clonedPosts = JSON.parse(JSON.stringify(posts));
   axios
     .get(`${posts.meta.path}?cursor=${posts.meta.next_cursor}`)
     .then((response) => {
-      console.log(response);
-      posts.data = [...posts.data, ...response.data.data];
+      posts.data = [...clonedPosts.data, ...response.data.data];
       posts.meta = response.data.meta;
 
       if (!response.data.meta.next_cursor) {

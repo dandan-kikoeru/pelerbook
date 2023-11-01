@@ -21,6 +21,7 @@
 <script setup>
 import { ref } from "vue";
 import Dropdown from "./Dropdown.vue";
+import { Link } from "@inertiajs/vue3";
 
 defineProps({
   auth: Object

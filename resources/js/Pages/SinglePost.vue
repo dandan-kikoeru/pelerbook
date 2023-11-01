@@ -1,9 +1,15 @@
 <template>
   <Head
-    :title="post[0].user.firstname + ' ' + post[0].user.surname + ' - ' + removeHtmlTags(post[0].caption)"
-  ></Head>
+    :title="
+      post.data[0].user.firstname +
+      ' ' +
+      post.data[0].user.surname +
+      ' - ' +
+      removeHtmlTags(post.data[0].caption)
+    "
+  />
   <div class="card max-w-lg bg-[#242526] shadow-xl mx-auto mt-4">
-    <Post :post="post[0]" :auth="auth" />
+    <Post :post="post.data[0]" :auth="auth" />
   </div>
 </template>
 <script setup>
