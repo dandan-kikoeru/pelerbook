@@ -4,6 +4,8 @@ use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Services\Formatting;
+use Illuminate\Http\Request;
+use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -32,21 +34,16 @@ Route::middleware(['auth'])->group(
     /**
      * Home
      */
-    Route::get('/', function () {
-      $posts = Post::latest()
-        ->with([
-          'user' => function ($q) {
-            $q->select('id', 'firstname', 'surname', 'avatar');
-          }
-        ])
-        ->get()
-        ->map(function ($post) {
-          $post->created_at_human = $post->created_at->diffForHumans();
-          $post->caption = Formatting::format_message($post->caption);
-          return $post;
-        });
+    Route::get('/', function (Request $request) {
+
+      $posts = Post::latest()->cursorPaginate(10);
+
+      if ($request->wantsJson()) {
+        return PostResource::collection($posts);
+      }
+
       return Inertia::render('Home', [
-        'posts' => $posts
+        'posts' => PostResource::collection($posts),
       ]);
     });
 

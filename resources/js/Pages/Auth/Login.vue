@@ -74,16 +74,15 @@
     </Toast>
   </div>
 </template>
-<script>
-export default {
-  layout: null,
-};
-</script>
 <script setup>
 import { useForm } from "@inertiajs/vue3";
 import Register from "./Register.vue";
 import { ref } from "vue";
 import Toast from "../../Components/Toast.vue";
+
+defineOptions({
+  layout: null,
+})
 
 const form = useForm({
   email: "",

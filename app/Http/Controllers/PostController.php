@@ -20,7 +20,7 @@ class PostController extends Controller
       'caption' => strip_tags($request->caption)
     ];
     Post::create($post);
-    return Inertia::location('/post/' . $post['id']);
+    return redirect('/post/' . $post['id']);
   }
 
   public function update(Request $request, Post $id)

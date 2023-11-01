@@ -15,7 +15,7 @@
           {{ post.user.firstname }} {{ post.user.surname }} </Link
         ><br />
         <Link :href="'/post/' + post.id" class="hover:underline text-sm">
-          {{ post.created_at_human }}
+          {{ post.created_at }}
         </Link>
       </div>
     </div>
@@ -29,7 +29,7 @@
       </span>
     </div>
     <div>
-      <div v-html="post.caption"/>
+      <div v-html="post.caption" />
     </div>
   </div>
 
@@ -68,7 +68,7 @@
 import { ref } from "vue";
 import EditPost from "./EditPost.vue";
 
-defineProps(['post', 'auth']);
+defineProps(["post", "auth"]);
 
 const showPopup = ref(false);
 
@@ -106,4 +106,5 @@ const toggleEdit = () => {
   document.removeEventListener("click", handleClickEdit);
   document.body.classList.remove("overflow-hidden");
 };
+
 </script>

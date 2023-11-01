@@ -3,7 +3,10 @@
   <div class="bg-[#242526] h-32 p-4 rounded-lg mt-6 max-w-lg mx-auto">
     <div class="flex gap-4 border-b pb-4 border-[#3a3b3c]">
       <Link class="aspect-square h-12" :href="'/' + auth.user.id">
-        <img :src="auth.user.avatar" class="rounded-full object-cover w-12 h-12" />
+        <img
+          :src="auth.user.avatar"
+          class="rounded-full object-cover w-12 h-12"
+        />
       </Link>
       <button
         @click="showCreatePost"
@@ -19,23 +22,43 @@
   >
     <CreatePost :firstname="auth.user.firstname" @close="showCreatePost" />
   </div>
-
   <div
-    v-for="post in posts"
+    v-for="post in posts.data"
     class="card max-w-lg bg-[#242526] shadow-xl mx-auto mt-4"
-    :key="posts.id"
+    :key="posts.data.id"
   >
     <Post :post="post" :auth="auth" />
   </div>
+  <div ref="target" class="-translate-y-64" />
 </template>
 <script setup>
 import { ref } from "vue";
 import CreatePost from "../Shared/CreatePost.vue";
 import Post from "../Shared/Post.vue";
+import { useIntersectionObserver } from "@vueuse/core";
+import axios from "axios";
 
-defineProps({
-  posts: Array,
+const { posts, auth } = defineProps({
+  posts: Object,
   auth: Object,
+});
+
+const target = ref(null);
+const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
+  if (!isIntersecting) {
+    return;
+  }
+  axios
+    .get(`${posts.meta.path}?cursor=${posts.meta.next_cursor}`)
+    .then((response) => {
+      console.log(response);
+      posts.data = [...posts.data, ...response.data.data];
+      posts.meta = response.data.meta;
+
+      if (!response.data.meta.next_cursor) {
+        stop();
+      }
+    });
 });
 
 const createPost = ref(false);
