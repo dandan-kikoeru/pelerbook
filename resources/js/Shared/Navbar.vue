@@ -1,7 +1,9 @@
 <template>
   <div class="navbar bg-[#242526] border-b border-[#38393a] z-30">
     <div class="flex-1">
-      <Link href="/" class="btn btn-ghost normal-case text-xl">pelerbook</Link>
+      <Link href="/" class="rounded-full mx-2">
+        <img :src="'/logo.webp'" class="h-12 aspect-square rounded-full" />
+      </Link>
     </div>
     <div class="flex-none gap-2">
       <label class="btn btn-ghost btn-circle avatar" @click="toggleDropdown">
@@ -15,7 +17,7 @@
       v-if="showDropdown"
       id="dropdown"
       :auth="auth"
-      />
+    />
   </div>
 </template>
 <script setup>
@@ -24,8 +26,8 @@ import Dropdown from "./Dropdown.vue";
 import { Link } from "@inertiajs/vue3";
 
 defineProps({
-  auth: Object
-})
+  auth: Object,
+});
 
 const showDropdown = ref(false);
 

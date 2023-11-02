@@ -3,7 +3,6 @@
 use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
-use App\Services\Formatting;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Route;
@@ -70,25 +69,9 @@ Route::middleware(['auth'])->group(
 
         $postfilter = Post::where('id', $id)->get();
 
-        // return PostResource::collection($postfilter);
         return Inertia::render('SinglePost', [
           'post' => PostResource::collection($postfilter),
         ]);
-        // return Inertia::render('SinglePost', [
-        //   'post' => Post::where('id', $id)
-        //     ->with([
-        //       'user' => function ($q) {
-        //         $q->select('id', 'firstname', 'surname', 'avatar');
-        //       }
-        //     ])
-        //     ->latest()
-        //     ->get()
-        //     ->map(function ($post) {
-        //       $post->created_at_human = $post->created_at->diffForHumans();
-        //       $post->caption = Formatting::format_message($post->caption);
-        //       return $post;
-        //     }),
-        // ]);
       }
     );
 

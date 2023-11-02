@@ -2,7 +2,7 @@
   <Head title="Log in or sign up | Pelerbook"></Head>
   <div class="flex justify-center items-center min-h-screen flex-col">
     <div class="text-center mb-16">
-      <img :src="'/logo.webp'" class="max-w-xs" />
+      <img :src="'/title.webp'" class="max-w-xs" />
       <p class="max-w-xs mt-8 text-lg">
         Pelerbook helps you connect your peler and share it with other people's
         peler.
