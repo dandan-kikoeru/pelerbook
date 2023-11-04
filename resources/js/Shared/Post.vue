@@ -64,15 +64,20 @@
     <EditPost :post="post" @close-edit="toggleEdit" />
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import EditPost from "./EditPost.vue";
+import type { PostType } from "@/PostType";
+import type { AuthType } from "@/AuthType";
 
-defineProps(["post", "auth"]);
+const { post, auth } = defineProps<{
+  post: PostType;
+  auth: AuthType;
+}>();
 
-const showPopup = ref(false);
+const showPopup = ref<boolean>(false);
 
-const handleClick = (e) => {
+const handleClick = (e: Event) => {
   const popup = document.getElementById("popup");
   if (e.target !== popup) {
     return togglePopup();
@@ -89,13 +94,13 @@ const togglePopup = () => {
   }, 100);
 };
 
-const handleClickEdit = (e) => {
+const handleClickEdit = (e: Event) => {
   const edit = document.getElementById("edit");
   if (e.target == edit) {
     return toggleEdit();
   }
 };
-const showEdit = ref(false);
+const showEdit = ref<boolean>(false);
 
 const toggleEdit = () => {
   showEdit.value = !showEdit.value;
@@ -106,5 +111,4 @@ const toggleEdit = () => {
   document.removeEventListener("click", handleClickEdit);
   document.body.classList.remove("overflow-hidden");
 };
-
 </script>

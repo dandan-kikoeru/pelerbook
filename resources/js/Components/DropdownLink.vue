@@ -5,9 +5,9 @@
   </Link>
 </template>
 
-<script setup>
-  defineProps({
-    icon: String,
-    label: String,
-  })
+<script setup lang="ts">
+const { icon, label } = defineProps<{
+  icon: string;
+  label: string;
+}>();
 </script>

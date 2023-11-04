@@ -41,19 +41,17 @@
     {{ form.errors.messages }}
   </p>
 </template>
-<script>
-export default {
-  layout: null,
-};
-</script>
-<script setup>
+<script setup lang="ts">
+import type { PostType } from "@/PostType";
 import { useForm } from "@inertiajs/vue3";
 
-const { post } = defineProps(["post"]);
+const { post } = defineProps<{
+  post: PostType;
+}>();
 
 // create a JavaScript function that removes HTML tags and reverts the formatting back to the original format
-const revertFormatting = (htmlString) => {
-  let revertedString = htmlString.replace(/<b>(.*?)<\/b>/g, "*$1*");
+const revertFormatting = (htmlString: string) => {
+  let revertedString: string = htmlString.replace(/<b>(.*?)<\/b>/g, "*$1*");
   revertedString = revertedString.replace(/<i>(.*?)<\/i>/g, "_$1_");
   revertedString = revertedString.replace(/<strike>(.*?)<\/strike>/g, "~$1~");
   revertedString = revertedString.replace(/<code>(.*?)<\/code>/g, "```$1```");
@@ -68,11 +66,11 @@ const revertFormatting = (htmlString) => {
   return revertedString;
 };
 
-const form = useForm({
+const form = useForm<any>({
   caption: revertFormatting(post.caption),
 });
 
-const submit = (id) => {
+const submit = (id: string) => {
   form.post(`/edit/${id}`);
 };
 

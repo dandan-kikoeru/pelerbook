@@ -29,10 +29,11 @@
     </ul>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
+import type { AuthType } from "@/AuthType";
 import DropdownLink from "../Components/DropdownLink.vue";
 
-defineProps({
-  auth: Object
-})
+defineProps<{
+  auth: AuthType;
+}>();
 </script>

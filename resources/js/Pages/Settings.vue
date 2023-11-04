@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen">
-    <Navbar :auth="auth.auth" class="z-50 fixed" />
+    <Navbar :auth="auth" class="z-50 fixed" />
     <div
       class="fixed left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
       :class="[form.avatar ? 'mt-8' : '']"
@@ -75,7 +75,7 @@
               </div>
               <img
                 v-if="form.avatar"
-                :src="form.avatarPreview"
+                :src="avatarPreview"
                 class="absolute aspect-square h-[24rem] w-[24rem] object-cover rounded-full p-4"
               />
             </div>
@@ -83,7 +83,6 @@
               <label class="cursor-pointer label ml-2">
                 <input
                   type="checkbox"
-                  checked="checked"
                   class="checkbox checkbox-error"
                   v-model="form.deleteAvatar"
                 />
@@ -103,22 +102,23 @@
     </div>
   </div>
 </template>
-<script>
-export default {
-  layout: null,
-};
-</script>
-<script setup>
+<script setup lang="ts">
 import { useForm } from "@inertiajs/vue3";
 import Navbar from "../Shared/Navbar.vue";
+import { ref } from "vue";
+import type { AuthType } from "@/AuthType";
 
-const auth = defineProps({
-  auth: Object,
+defineOptions({
+  layout: null,
 });
 
-const form = useForm({
-  firstname: auth.auth.user.firstname,
-  surname: auth.auth.user.surname,
+const { auth } = defineProps<{
+  auth: AuthType;
+}>();
+
+const form = useForm<any>({
+  firstname: auth.user.firstname,
+  surname: auth.user.surname,
   avatar: null,
   deleteAvatar: false,
 });
@@ -127,14 +127,20 @@ const submit = () => {
   form.post("/settings");
 };
 
+const avatarPreview = ref(null);
+
 const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  const reader = new FileReader();
+  const inputElement = event.target;
+  const file = inputElement.files[0];
 
-  reader.onload = () => {
-    form.avatarPreview = reader.result;
-  };
+  if (file) {
+    const reader = new FileReader();
 
-  reader.readAsDataURL(file);
+    reader.onload = () => {
+      avatarPreview.value = reader.result;
+    };
+
+    reader.readAsDataURL(file);
+  }
 };
 </script>

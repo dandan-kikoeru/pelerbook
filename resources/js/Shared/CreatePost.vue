@@ -41,11 +41,10 @@
     {{ form.errors.messages }}
   </p>
 </template>
-<script setup>
+<script setup lang="ts">
 import { useForm } from "@inertiajs/vue3";
 
-
-const form = useForm({
+const form = useForm<any>({
   caption: "",
 });
 
@@ -53,8 +52,9 @@ const submit = () => {
   form.post("/store");
 };
 
-defineProps({
-  firstname: String,
-});
+defineProps<{
+  firstname: string;
+}>();
+
 defineEmits(["close"]);
 </script>

@@ -25,29 +25,33 @@
   <div
     v-for="post in posts.data"
     class="card max-w-lg bg-[#242526] shadow-xl mx-auto mt-4"
-    :key="posts.data.id"
+    :key="post.id"
   >
     <Post :post="post" :auth="auth" />
   </div>
   <div ref="target" class="-translate-y-64" />
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import CreatePost from "../Shared/CreatePost.vue";
 import Post from "../Shared/Post.vue";
 import { useIntersectionObserver } from "@vueuse/core";
 import axios from "axios";
+import type { AuthType } from "@/AuthType.ts";
+import type { PostsType } from "@/PostsType";
+import type { PostType } from "@/PostType";
 
-const { posts, auth } = defineProps({
-  posts: Object,
-  auth: Object,
-});
+const { posts, auth } = defineProps<{
+  posts: PostsType;
+  auth: AuthType;
+}>();
+
 const target = ref(null);
 const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
   if (!isIntersecting) {
     return;
   }
-  const clonedPosts = JSON.parse(JSON.stringify(posts));
+  const clonedPosts: { data: PostType[] } = JSON.parse(JSON.stringify(posts));
   axios
     .get(`${posts.meta.path}?cursor=${posts.meta.next_cursor}`)
     .then((response) => {
@@ -60,15 +64,14 @@ const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
     });
 });
 
-const createPost = ref(false);
+const createPost = ref<boolean>(false);
 
-const handleClickCreate = (e) => {
+const handleClickCreate = (e: Event) => {
   const createpostpopup = document.getElementById("createpostpopup");
   if (e.target == createpostpopup) {
     return showCreatePost();
   }
 };
-
 const showCreatePost = () => {
   createPost.value = !createPost.value;
   if (createPost.value) {

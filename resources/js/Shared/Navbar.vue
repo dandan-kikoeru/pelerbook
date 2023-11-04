@@ -20,18 +20,19 @@
     />
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import Dropdown from "./Dropdown.vue";
 import { Link } from "@inertiajs/vue3";
+import type { AuthType } from "@/AuthType";
 
-defineProps({
-  auth: Object,
-});
+defineProps<{
+  auth: AuthType;
+}>();
 
 const showDropdown = ref(false);
 
-const handleClick = (e) => {
+const handleClick = (e: Event) => {
   const dropdown = document.getElementById("dropdown");
   if (e.target !== dropdown) {
     return toggleDropdown();

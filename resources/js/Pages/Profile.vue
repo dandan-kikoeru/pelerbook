@@ -31,31 +31,35 @@
   <div
     v-for="post in posts.data"
     class="card max-w-lg bg-[#242526] shadow-xl mx-auto mt-4"
-    :key="posts.id"
+    :key="post.id"
   >
     <Post :post="post" :auth="auth" />
   </div>
   <div ref="target" class="-translate-y-64" />
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import CreatePost from "../Shared/CreatePost.vue";
 import Post from "../Shared/Post.vue";
 import { useIntersectionObserver } from "@vueuse/core";
 import axios from "axios";
+import type { UserType } from "@/UserType.ts";
+import type { PostType } from "@/PostType.ts";
+import type { AuthType } from "@/AuthType";
+import type { PostsType } from "@/PostsType";
 
-const { posts, auth, profile } = defineProps({
-  posts: Object,
-  auth: Object,
-  profile: Object,
-});
+const { posts, auth, profile } = defineProps<{
+  posts: PostsType;
+  auth: AuthType;
+  profile: UserType;
+}>();
 
 const target = ref(null);
 const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
   if (!isIntersecting) {
     return;
   }
-  const clonedPosts = JSON.parse(JSON.stringify(posts));
+  const clonedPosts: { data: PostType[] } = JSON.parse(JSON.stringify(posts));
   axios
     .get(`${posts.meta.path}?cursor=${posts.meta.next_cursor}`)
     .then((response) => {
@@ -67,7 +71,7 @@ const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
       }
     });
 });
-const createPost = ref(false);
+const createPost = ref<boolean>(false);
 
 const showCreatePost = () => {
   createPost.value = !createPost.value;

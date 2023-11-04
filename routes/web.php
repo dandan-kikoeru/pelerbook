@@ -59,21 +59,17 @@ Route::middleware(['auth'])->group(
     /**
      * * Post
      */
-    Route::get(
-      '/post/{id}',
-      function ($id) {
-        $post = Post::find($id);
-        if (!$post) {
-          return abort(404);
-        }
-
-        $postfilter = Post::where('id', $id)->get();
-
-        return Inertia::render('SinglePost', [
-          'post' => PostResource::collection($postfilter),
-        ]);
+    Route::get('/post/{id}', function ($id) {
+      $post = Post::find($id);
+      if (!$post) {
+        return abort(404);
       }
-    );
+
+      return Inertia::render('SinglePost', [
+        'post' => new PostResource($post),
+      ]);
+    });
+
 
     /**
      * * Profile
