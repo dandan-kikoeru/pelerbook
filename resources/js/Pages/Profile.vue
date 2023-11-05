@@ -35,16 +35,12 @@
   >
     <Post :post="post" :auth="auth" />
   </div>
-  <div ref="target" class="-translate-y-64" />
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
 import CreatePost from "../Shared/CreatePost.vue";
 import Post from "../Shared/Post.vue";
-import { useIntersectionObserver } from "@vueuse/core";
-import axios from "axios";
 import type { UserType } from "@/UserType.ts";
-import type { PostType } from "@/PostType.ts";
 import type { AuthType } from "@/AuthType";
 import type { PostsType } from "@/PostsType";
 
@@ -54,23 +50,6 @@ const { posts, auth, profile } = defineProps<{
   profile: UserType;
 }>();
 
-const target = ref(null);
-const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
-  if (!isIntersecting) {
-    return;
-  }
-  const clonedPosts: { data: PostType[] } = JSON.parse(JSON.stringify(posts));
-  axios
-    .get(`${posts.meta.path}?cursor=${posts.meta.next_cursor}`)
-    .then((response) => {
-      posts.data = [...clonedPosts.data, ...response.data.data];
-      posts.meta = response.data.meta;
-
-      if (!response.data.meta.next_cursor) {
-        stop();
-      }
-    });
-});
 const createPost = ref<boolean>(false);
 
 const showCreatePost = () => {

@@ -28,10 +28,8 @@
         more_horiz
       </span>
     </div>
-    <div>
-      <div v-html="post.caption" />
-    </div>
-    <p v-if="post.likes" class="flex gap-1 pt-2">
+    <p v-html="post.caption" class="pb-2" />
+    <p v-if="post.likes" class="flex gap-1">
       <span class="material-symbols-outlined text-[#0065ff]"> thumb_up </span
       >{{ post.likes }}
     </p>
@@ -42,12 +40,13 @@
         :href="`/api/like/${post.id}`"
         :class="
           post.liked_by_user
-            ? 'btn btn-ghost w-full text-[#0065ff] normal-case'
-            : 'btn btn-ghost w-full active:text-[#0065ff] normal-case'
+            ? 'btn btn-ghost btn-block text-[#0065ff] normal-case'
+            : 'btn btn-ghost btn-block active:text-[#0065ff] normal-case'
         "
         preserve-scroll
-        ><span class="material-symbols-outlined"> thumb_up </span>Like</Link
       >
+        <span class="material-symbols-outlined"> thumb_up </span>Like
+      </Link>
     </div>
   </div>
 
@@ -68,7 +67,6 @@
       method="post"
       :href="'/api/post/destroy/' + post.id"
       as="button"
-      preserve-scroll
     >
       <span class="material-symbols-outlined align-middle">delete</span>
       <span class="align-text-top ml-2">Delete post</span>

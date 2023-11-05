@@ -48,11 +48,9 @@ Route::middleware(['auth'])->group(function () {
    * * Home
    */
 
+  //
   Route::get('/', function (Request $request) {
-    $posts = Post::latest()->cursorPaginate(10);
-    if ($request->wantsJson()) {
-      return PostResource::collection($posts);
-    }
+    $posts = Post::latest()->get();
 
     return Inertia::render('Home', [
       'posts' => PostResource::collection($posts),
@@ -60,7 +58,6 @@ Route::middleware(['auth'])->group(function () {
   });
 
   Route::get('/settings', function () {
-    sleep(1);
     return Inertia::render('Settings');
   });
 
@@ -85,17 +82,8 @@ Route::middleware(['auth'])->group(function () {
 
   Route::get('/{id}', function ($id, User $user, Request $request) {
     $user = User::find($id);
-    $posts = Post::where('user_id', $id)->latest()->cursorPaginate(10);
+    $posts = Post::where('user_id', $id)->latest()->get();
 
-    if (!$user) {
-      return abort(404);
-    }
-
-    if ($request->wantsJson()) {
-      return PostResource::collection($posts);
-    }
-
-    sleep(1);
     return Inertia::render('Profile', [
       'posts' => PostResource::collection($posts),
       'profile' => [
