@@ -5,4 +5,6 @@ export interface PostType {
   created_at: string;
   id: string;
   user: UserType;
+  likes: BigInteger;
+  liked_by_user: boolean;
 }

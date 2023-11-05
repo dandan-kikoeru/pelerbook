@@ -49,7 +49,7 @@ const form = useForm<any>({
 });
 
 const submit = () => {
-  form.post("/store");
+  form.post("/api/post/store");
 };
 
 defineProps<{

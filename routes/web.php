@@ -6,17 +6,33 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 
-Route::middleware(['guest'])->group(function () {
+/**
+ * * API
+ */
 
-  Route::get('/login', function () {
-    return Inertia::render('Auth/Login');
-  })->name('login');
-  Route::post('/login', [UserController::class, 'login']);
-  Route::post('/register', [UserController::class, 'register']);
+Route::middleware(['guest'])->group(function () {
+  Route::post('/api/user/register', [UserController::class, 'register']);
+  Route::post('/api/user/login', [UserController::class, 'login']);
 });
+
+Route::middleware(['auth'])->group(function () {
+  Route::post('/api/user/logout', [UserController::class, 'logout']);
+  Route::post('/api/user/update', [UserController::class, 'update']);
+
+  Route::post('/api/post/store', [PostController::class, 'store']);
+  Route::post('/api/post/update/{id}', [PostController::class, 'update']);
+  Route::post('/api/post/destroy/{id}', [PostController::class, 'destroy']);
+
+  Route::post('/api/like/{id}', [LikeController::class, 'like']);
+});
+
+Route::get('/login', function () {
+  return Inertia::render('Auth/Login');
+})->name('login')->middleware('guest');
 
 $japaneseGoblin = ['/recover', '/help', '/about', '/about/terms', '/about/privacy', '/about/cookies'];
 foreach ($japaneseGoblin as $route) {
@@ -25,78 +41,68 @@ foreach ($japaneseGoblin as $route) {
   });
 }
 
-Route::middleware(['auth'])->group(
-  function () {
-    Route::post('/logout', [UserController::class, 'logout']);
-    Route::redirect('/home', '/');
+Route::middleware(['auth'])->group(function () {
+  Route::redirect('/home', '/');
 
-    /**
-     * * Home
-     */
-    Route::get('/', function (Request $request) {
+  /**
+   * * Home
+   */
 
-      $posts = Post::latest()->cursorPaginate(10);
+  Route::get('/', function (Request $request) {
+    $posts = Post::latest()->cursorPaginate(10);
+    if ($request->wantsJson()) {
+      return PostResource::collection($posts);
+    }
 
-      if ($request->wantsJson()) {
-        return PostResource::collection($posts);
-      }
+    return Inertia::render('Home', [
+      'posts' => PostResource::collection($posts),
+    ]);
+  });
 
-      return Inertia::render('Home', [
-        'posts' => PostResource::collection($posts),
-      ]);
-    });
+  Route::get('/settings', function () {
+    sleep(1);
+    return Inertia::render('Settings');
+  });
 
-    Route::post('/store', [PostController::class, 'store']);
-    Route::get('/settings', function () {
-      sleep(1);
-      return Inertia::render('Settings');
-    });
-    Route::post('settings', [UserController::class, 'update']);
+  /**
+   * * Post
+   */
 
-    Route::post('/delete/{id}', [PostController::class, 'destroy']);
-    Route::post('/edit/{id}', [PostController::class, 'update']);
+  Route::get('/post/{id}', function ($id) {
+    $post = Post::find($id);
+    if (!$post) {
+      return abort(404);
+    }
 
-    /**
-     * * Post
-     */
-    Route::get('/post/{id}', function ($id) {
-      $post = Post::find($id);
-      if (!$post) {
-        return abort(404);
-      }
+    return Inertia::render('SinglePost', [
+      'post' => new PostResource($post),
+    ]);
+  });
 
-      return Inertia::render('SinglePost', [
-        'post' => new PostResource($post),
-      ]);
-    });
+  /**
+   * * Profile
+   */
 
+  Route::get('/{id}', function ($id, User $user, Request $request) {
+    $user = User::find($id);
+    $posts = Post::where('user_id', $id)->latest()->cursorPaginate(10);
 
-    /**
-     * * Profile
-     */
+    if (!$user) {
+      return abort(404);
+    }
 
-    Route::get('/{id}', function ($id, User $user, Request $request) {
-      $user = User::find($id);
-      $posts = Post::where('user_id', $id)->latest()->cursorPaginate(10);
+    if ($request->wantsJson()) {
+      return PostResource::collection($posts);
+    }
 
-      if (!$user) {
-        return abort(404);
-      }
-
-      if ($request->wantsJson()) {
-        return PostResource::collection($posts);
-      }
-
-      sleep(1);
-      return Inertia::render('Profile', [
-        'posts' => PostResource::collection($posts),
-        'profile' => [
-          'id' => $user->id,
-          'firstname' => $user->firstname,
-          'surname' => $user->surname,
-        ]
-      ]);
-    });
-
-  }
-);
+    sleep(1);
+    return Inertia::render('Profile', [
+      'posts' => PostResource::collection($posts),
+      'profile' => [
+        'id' => $user->id,
+        'firstname' => $user->firstname,
+        'surname' => $user->surname,
+      ]
+    ]);
+  });
+});

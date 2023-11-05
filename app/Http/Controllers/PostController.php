@@ -25,12 +25,15 @@ class PostController extends Controller
 
   public function update(Request $request, Post $id)
   {
-    $post = $request->validate([
-      'caption' => 'required',
-    ]);
-    $post['caption'] = strip_tags($post['caption']);
-    $id->update($post);
-    return Inertia::location('/post/' . $id->id);
+    if (Auth()->user()->id = $id->user_id) {
+      $post = $request->validate([
+        'caption' => 'required',
+      ]);
+      $post['caption'] = strip_tags($post['caption']);
+      $id->update($post);
+      return Inertia::location('/post/' . $id->id);
+    }
+    return abort(400);
   }
 
   public function destroy(Post $id)
@@ -39,7 +42,7 @@ class PostController extends Controller
       $id->delete();
       return Inertia::location('/');
     }
-    return abort(404);
+    return abort(400);
   }
 
 }

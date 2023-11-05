@@ -124,7 +124,7 @@ const form = useForm<any>({
 });
 
 const submit = () => {
-  form.post("/settings");
+  form.post("/api/user/update");
 };
 
 const avatarPreview = ref(null);

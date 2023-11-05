@@ -71,7 +71,7 @@ const form = useForm<any>({
 });
 
 const submit = (id: string) => {
-  form.post(`/edit/${id}`);
+  form.post(`/api/post/update/${id}`);
 };
 
 defineEmits(["closeEdit"]);

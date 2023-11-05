@@ -31,6 +31,24 @@
     <div>
       <div v-html="post.caption" />
     </div>
+    <p v-if="post.likes" class="flex gap-1 pt-2">
+      <span class="material-symbols-outlined text-[#0065ff]"> thumb_up </span
+      >{{ post.likes }}
+    </p>
+    <div class="border-[#3e4042] border-y py-1">
+      <Link
+        as="button"
+        method="post"
+        :href="`/api/like/${post.id}`"
+        :class="
+          post.liked_by_user
+            ? 'btn btn-ghost w-full text-[#0065ff] normal-case'
+            : 'btn btn-ghost w-full active:text-[#0065ff] normal-case'
+        "
+        preserve-scroll
+        ><span class="material-symbols-outlined"> thumb_up </span>Like</Link
+      >
+    </div>
   </div>
 
   <div
@@ -48,7 +66,7 @@
     <Link
       class="text-start hover:bg-[#3a3b3c] p-2 rounded-md w-80 flex"
       method="post"
-      :href="'/delete/' + post.id"
+      :href="'/api/post/destroy/' + post.id"
       as="button"
       preserve-scroll
     >

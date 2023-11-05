@@ -82,7 +82,7 @@ import Toast from "../../Components/Toast.vue";
 
 defineOptions({
   layout: null,
-})
+});
 
 const form = useForm({
   email: "",
@@ -90,7 +90,7 @@ const form = useForm({
 });
 
 const submit = () => {
-  form.post("/login");
+  form.post("/api/user/login");
 };
 
 const showRegister = ref(false);

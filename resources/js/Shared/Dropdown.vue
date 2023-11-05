@@ -19,7 +19,7 @@
       </li>
       <li class="w-96">
         <DropdownLink
-          href="/logout"
+          href="/api/user/logout"
           as="button"
           method="post"
           icon="logout"
