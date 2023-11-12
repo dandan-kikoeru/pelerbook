@@ -1,98 +1,86 @@
 <template>
-  <div class="h-screen">
-    <Navbar :auth="auth" class="z-50 fixed" />
-    <div
-      class="fixed left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
-      :class="[form.avatar ? 'mt-8' : '']"
-    >
-      <div class="card w-[28rem] bg-[#242526] shadow-xl">
-        <form @submit.prevent="submit">
-          <div class="border-b py-6 border-[#2f3031] flex justify-between">
-            <div class="px-6">
-              <p class="font-bold text-2xl">Edit profile</p>
-            </div>
+  <Head title="Settings | Pelerbook"></Head>
+  <div
+    class="card bg-neutral shadow-xl max-w-lg absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+  >
+    <div class="card-body">
+      <div class="flex">
+        <input type="text" class="input" :value="auth.user.firstname" />
+        <input type="text" class="input" :value="auth.user.surname" />
+      </div>
+      <div>
+        <div class="flex justify-between items-center">
+          Profile Picture
+          <div
+            class="btn btn-ghost text-primary normal-case"
+            @click="openAvatarInput"
+          >
+            Edit
           </div>
-          <div class="card-body gap-4 pt-0">
-            <div class="flex gap-4">
-              <div class="flex flex-col gap-4">
-                <component
-                  :is="form.errors.firstname ? 'div' : 'div'"
-                  :class="
-                    form.errors.firstname
-                      ? 'tooltip tooltip-open tooltip-error'
-                      : ''
-                  "
-                  v-bind:data-tip="form.errors.firstname"
-                ></component>
-                <input
-                  v-model="form.firstname"
-                  name="firstname"
-                  type="text"
-                  placeholder="First name"
-                  class="input w-full max-w-xs bg-[#18191a]"
-                />
-              </div>
-              <div class="flex flex-col gap-4">
-                <component
-                  :is="form.errors.surname ? 'div' : 'div'"
-                  :class="
-                    form.errors.surname
-                      ? 'tooltip tooltip-open tooltip-error'
-                      : ''
-                  "
-                  v-bind:data-tip="form.errors.surname"
-                ></component>
-                <input
-                  v-model="form.surname"
-                  name="surname"
-                  type="text"
-                  placeholder="Surname"
-                  class="input w-full max-w-xs bg-[#18191a]"
-                />
-              </div>
+        </div>
+        <form @submit.prevent="submitAvatar()">
+          <div class="flex flex-col mt-2">
+            <input
+              type="file"
+              accept=".jpg, .jpeg, .png, .webp"
+              @change="handleAvatarPreview"
+              @input="avatarForm.avatar = $event.target.files[0]"
+              ref="avatarInputRef"
+              class="hidden"
+            />
+            <img
+              :src="avatarPreview"
+              class="h-32 w-32 rounded-full mx-auto"
+              v-if="avatarPreview"
+            />
+            <button
+              class="btn btn-primary mx-auto my-4 normal-case"
+              v-if="!avatarError && avatarForm.avatar !== auth.user.avatar"
+              :disabled="avatarForm.processing"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+      <div>
+        <div class="flex justify-between items-center">
+          Cover
+          <div
+            class="btn btn-ghost text-primary normal-case"
+            @click="openCoverInput"
+          >
+            Edit
+          </div>
+        </div>
+        <form @submit.prevent="submitCover()">
+          <div class="flex flex-col mt-2">
+            <input
+              type="file"
+              accept=".jpg, .jpeg, .png, .webp"
+              @change="handleCoverPreview"
+              @input="coverForm.cover = $event.target.files[0]"
+              ref="coverInputRef"
+              class="hidden"
+            />
+            <div
+              class="relative aspect-[3/1] max-w-6xl overflow-hidden rounded-xl"
+              v-if="coverPreview"
+            >
+              <img
+                :src="coverPreview"
+                class="object-cover w-full h-full"
+                v-if="coverPreview"
+              />
             </div>
             <div
-              :class="[
-                form.avatar
-                  ? 'aspect-square flex bg-[#18191a] rounded-xl cursor-pointer'
-                  : 'flex bg-[#18191a] rounded-lg',
-              ]"
-              v-if="!form.deleteAvatar"
-            >
-              <input
-                type="file"
-                class="opacity-0 w-full z-10 file:w-full file:cursor-pointer file:h-full file:min-h-16"
-                accept=".jpg, .jpeg, .png, .webp, .gif"
-                @change="handleFileUpload"
-                @input="form.avatar = $event.target.files[0]"
-                :disabled="form.deleteAvatar"
-              />
-              <div
-                v-if="!form.avatar"
-                class="absolute flex h-16 left-1/2 -translate-x-1/2 items-center"
-              >
-                Upload avatar
-              </div>
-              <img
-                v-if="form.avatar"
-                :src="avatarPreview"
-                class="absolute aspect-square h-[24rem] w-[24rem] object-cover rounded-full p-4"
-              />
-            </div>
-            <div class="flex">
-              <label class="cursor-pointer label ml-2">
-                <input
-                  type="checkbox"
-                  class="checkbox checkbox-error"
-                  v-model="form.deleteAvatar"
-                />
-                <span class="label-text ml-2">Delete avatar</span>
-              </label>
-            </div>
+              class="relative aspect-[3/1] max-w-6xl mx-auto overflow-hidden rounded-xl bg-black"
+              v-else
+            ></div>
             <button
-              href="/register"
-              class="btn btn-success normal-case w-2/3 mx-auto mt-2"
-              :disabled="form.processing"
+              class="btn btn-primary mx-auto my-4 normal-case"
+              v-if="!coverError && coverForm.cover !== auth.user.cover"
+              :disabled="coverForm.processing"
             >
               Save
             </button>
@@ -104,43 +92,107 @@
 </template>
 <script setup lang="ts">
 import { useForm } from "@inertiajs/vue3";
-import Navbar from "../Shared/Navbar.vue";
 import { ref } from "vue";
 import type { AuthType } from "@/AuthType";
-
-defineOptions({
-  layout: null,
-});
 
 const { auth } = defineProps<{
   auth: AuthType;
 }>();
 
-const form = useForm<any>({
-  firstname: auth.user.firstname,
-  surname: auth.user.surname,
-  avatar: null,
-  deleteAvatar: false,
+/**
+ *  * Avatar
+ */
+
+const avatarForm = useForm({
+  avatar: auth.user.avatar,
 });
 
-const submit = () => {
-  form.post("/api/user/update");
+const submitAvatar = () => {
+  avatarForm.post("/api/user/update", {
+    onSuccess: () => {
+      avatarForm.avatar = auth.user.avatar;
+    },
+  });
 };
 
-const avatarPreview = ref(null);
+const avatarInputRef = ref(null);
+const avatarError = ref(false);
+const avatarPreview = ref<any>(auth.user.avatar);
 
-const handleFileUpload = (event) => {
+const openAvatarInput = () => {
+  avatarInputRef.value.click();
+};
+
+const handleAvatarPreview = (event) => {
   const inputElement = event.target;
   const file = inputElement.files[0];
 
-  if (file) {
+  if (file && isValidImageFile(file)) {
     const reader = new FileReader();
 
     reader.onload = () => {
       avatarPreview.value = reader.result;
     };
 
+    avatarError.value = false;
     reader.readAsDataURL(file);
+  } else {
+    avatarForm.avatar = auth.user.avatar;
+    avatarPreview.value = auth.user.avatar;
+    avatarError.value = true;
   }
+};
+
+/**
+ *  * Cover
+ */
+
+const coverForm = useForm({
+  cover: auth.user.cover,
+});
+
+const submitCover = () => {
+  coverForm.post("/api/user/update", {
+    onSuccess: () => {
+      coverForm.cover = auth.user.cover;
+    },
+  });
+};
+
+const coverInputRef = ref(null);
+const coverError = ref(false);
+const coverPreview = ref<any>(auth.user.cover);
+
+const openCoverInput = () => {
+  coverInputRef.value.click();
+};
+
+const handleCoverPreview = (event) => {
+  const inputElement = event.target;
+  const file = inputElement.files[0];
+
+  if (file && isValidImageFile(file)) {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      coverPreview.value = reader.result;
+    };
+
+    coverError.value = false;
+    reader.readAsDataURL(file);
+  } else {
+    coverForm.cover = auth.user.cover;
+    coverPreview.value = auth.user.cover;
+    coverError.value = true;
+  }
+};
+
+const isValidImageFile = (file) => {
+  const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
+  const fileExtension = file.name
+    .toLowerCase()
+    .substring(file.name.lastIndexOf("."));
+
+  return allowedExtensions.includes(fileExtension);
 };
 </script>

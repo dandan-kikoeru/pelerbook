@@ -9,7 +9,7 @@
       </p>
     </div>
     <form @submit.prevent="submit">
-      <div class="card w-96 bg-[#242526] shadow-xl">
+      <div class="card w-96 bg-neutral shadow-xl">
         <div class="card-body gap-4">
           <component
             :is="form.errors.email ? 'div' : 'div'"
@@ -21,7 +21,7 @@
           <input
             type="text"
             placeholder="Email address"
-            class="input w-full bg-[#18191a] max-w-xs"
+            class="input w-full bg-base-100 max-w-xs"
             v-model="form.email"
           />
           <component
@@ -34,25 +34,25 @@
           <input
             type="password"
             placeholder="Password"
-            class="input bg-[#18191a] w-full max-w-xs"
+            class="input bg-base-100 w-full max-w-xs"
             v-model="form.password"
           />
           <div
-            class="card-actions justify-center border-b-2 border-[#2f3031] pb-4 flex-col items-center"
+            class="card-actions justify-center border-b-2 border-accent pb-4 flex-col items-center"
           >
             <button
-              class="btn btn-info normal-case w-full mt-2"
+              class="btn btn-primary normal-case w-full mt-2"
               :disabled="form.processing"
             >
               Log in
             </button>
-            <Link href="/recover" class="hover:underline text-info text-sm"
+            <Link href="/recover" class="hover:underline text-primary text-sm"
               >Forgotten password?</Link
             >
           </div>
           <div
             @click="toggleRegister"
-            class="btn btn-success normal-case w-2/3 mx-auto mt-2"
+            class="btn btn-secondary normal-case w-2/3 mx-auto mt-2"
           >
             Create new account
           </div>
@@ -74,17 +74,17 @@
     </Toast>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { useForm } from "@inertiajs/vue3";
-import Register from "./Register.vue";
+import Register from "../Shared/Register.vue";
 import { ref } from "vue";
-import Toast from "../../Components/Toast.vue";
+import Toast from "../Components/Toast.vue";
 
 defineOptions({
   layout: null,
 });
 
-const form = useForm({
+const form = useForm<any>({
   email: "",
   password: "",
 });
@@ -95,7 +95,7 @@ const submit = () => {
 
 const showRegister = ref(false);
 
-const handleClick = (e) => {
+const handleClick = (e: Event) => {
   const register = document.getElementById("register");
   if (e.target == register) {
     return toggleRegister();

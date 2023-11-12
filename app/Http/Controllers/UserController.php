@@ -48,46 +48,44 @@ class UserController extends Controller
 
   public function update(Request $request)
   {
-    sleep(1);
+    // sleep(1);
     $user = Auth()->user();
-
-    if ($request->deleteAvatar) {
-      $user->avatar = "/avatars/guest.webp";
-      $user->firstname = $request->firstname;
-      $user->surname = $request->surname;
-      $user->save();
-      return redirect('/');
-    }
 
     if ($request->hasFile('avatar')) {
       $request->validate([
-        'avatar' => ['mimes:jpeg,png,jpg,gif,webp', 'max:2048']
+        'avatar' => ['mimes:jpeg,png,jpg,webp', 'max:2048']
       ]);
 
       $avatarName = $user->id . '.webp';
-
       $avatar = Image::make($request->file('avatar'))->encode('webp', 90);
-
       $avatar
         ->resize(128, null, function ($constraint) {
           $constraint->aspectRatio();
         })
         ->save(public_path('/avatars/' . $avatarName));
-
       $user->avatar = '/avatars/' . $avatarName;
-
     }
 
-    $request->validate([
-      'firstname' => ['required', 'regex:/^[A-Za-z]+$/'],
-      'surname' => ['required', 'regex:/^[A-Za-z]+$/'],
-    ]);
+    if ($request->hasFile('cover')) {
+      $request->validate([
+        'cover' => ['mimes:jpeg,png,jpg,webp', 'max:2048']
+      ]);
 
-    $user->firstname = $request->firstname;
-    $user->surname = $request->surname;
+      $coverName = $user->id . '.webp';
+      $cover = Image::make($request->file('cover'))->encode('webp', 90)->save(public_path('/covers/' . $coverName));
+      $user->cover = '/covers/' . $coverName;
+    }
+
+    // $request->validate([
+    //   'firstname' => ['required', 'regex:/^[A-Za-z]+$/'],
+    //   'surname' => ['required', 'regex:/^[A-Za-z]+$/'],
+    // ]);
+
+    // $user->firstname = $request->firstname;
+    // $user->surname = $request->surname;
     $user->save();
 
-    return redirect('/');
+    return back();
   }
 
 }

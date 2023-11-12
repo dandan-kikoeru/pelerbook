@@ -6,41 +6,75 @@ use App\Models\Post;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Image; // alias of Intervention\Image\ImageServiceProvider::class,
+
 
 class PostController extends Controller
 {
   public function store(Request $request)
   {
     $request->validate([
-      'caption' => 'required',
+      'caption' => ['required'],
     ]);
-    $post = [
-      'user_id' => Auth()->user()->id,
-      'id' => Str::random(16),
-      'caption' => strip_tags($request->caption)
-    ];
-    Post::create($post);
-    return redirect('/post/' . $post['id']);
+
+    $imageName = null;
+    $randId = Str::random(16);
+
+    if ($request->hasFile('image')) {
+      $request->validate([
+        'image' => ['mimes:jpeg,png,jpg,webp', 'max:2048']
+      ]);
+      $imageName = '/images/' . $randId . '.webp';
+      Image::make($request->file('image'))->encode('webp', 90)->save(public_path($imageName));
+    }
+
+    Post::create([
+      'caption' => htmlspecialchars($request->caption),
+      'id' => $randId,
+      'user_id' => auth()->user()->id,
+      'image' => $imageName,
+    ]);
+    return back()->with('success', 'Success created post');
   }
 
-  public function update(Request $request, Post $id)
+  public function update(Request $request, $id)
   {
-    if (Auth()->user()->id = $id->user_id) {
-      $post = $request->validate([
-        'caption' => 'required',
-      ]);
-      $post['caption'] = strip_tags($post['caption']);
-      $id->update($post);
-      return Inertia::location('/post/' . $id->id);
+    $post = Post::find($id);
+    if (Auth()->user()->id !== $post->user_id) {
+      return abort(400);
     }
-    return abort(400);
+
+    $request->validate([
+      'caption' => ['required',],
+    ]);
+
+    $imageName = null;
+
+    if ($request->image !== null) {
+      $imageName = $post->image;
+    }
+
+    if ($request->hasFile('image')) {
+      $request->validate([
+        'image' => ['mimes:jpeg,png,jpg,webp', 'max:2048']
+      ]);
+      $imageName = '/images/' . $post->id . '.webp';
+      Image::make($request->file('image'))->encode('webp', 90)->save(public_path($imageName));
+    }
+
+    $post->caption = htmlspecialchars($request->caption);
+    $post->image = $imageName;
+    $post->save();
+    return back()->with('success', 'Success edited post');
+
   }
 
   public function destroy(Post $id)
   {
     if (Auth()->user()->id = $id->user_id) {
+      $id->likes()->delete();
       $id->delete();
-      return Inertia::location('/');
+      return back()->with('success', 'Success deleted post');
     }
     return abort(400);
   }

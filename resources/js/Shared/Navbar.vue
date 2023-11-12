@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar bg-[#242526] border-b border-[#38393a] z-30">
+  <div class="navbar bg-neutral border-b border-accent z-30">
     <div class="flex-1">
       <Link href="/" class="rounded-full mx-2">
         <img :src="'/logo.webp'" class="h-12 aspect-square rounded-full" />

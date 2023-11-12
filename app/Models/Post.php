@@ -11,9 +11,10 @@ class Post extends Model
 
   public $incrementing = false;
   protected $fillable = [
-    'id',
+    "id",
     "caption",
     "user_id",
+    "image"
   ];
 
 

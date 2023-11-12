@@ -1,5 +1,7 @@
 <template>
-  <Link class="w-full text-start hover:bg-[#3a3b3c] p-2 rounded-md">
+  <Link
+    class="w-full text-start hover:bg-accent normal-case p-2 rounded-md transition-all duration-200"
+  >
     <span class="material-symbols-outlined align-middle">{{ icon }}</span>
     <span class="align-text-top ml-2">{{ label }}</span>
   </Link>

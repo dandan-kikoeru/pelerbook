@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/login', function () {
-  return Inertia::render('Auth/Login');
+  return Inertia::render('Login');
 })->name('login')->middleware('guest');
 
 $japaneseGoblin = ['/recover', '/help', '/about', '/about/terms', '/about/privacy', '/about/cookies'];
@@ -48,7 +48,6 @@ Route::middleware(['auth'])->group(function () {
    * * Home
    */
 
-  //
   Route::get('/', function (Request $request) {
     $posts = Post::latest()->get();
 
@@ -90,6 +89,9 @@ Route::middleware(['auth'])->group(function () {
         'id' => $user->id,
         'firstname' => $user->firstname,
         'surname' => $user->surname,
+        'avatar' => $user->avatar,
+        'cover' => $user->cover,
+        'createdAt' => $user->created_at->format('F Y'),
       ]
     ]);
   });

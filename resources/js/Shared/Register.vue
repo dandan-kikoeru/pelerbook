@@ -1,14 +1,14 @@
 <template>
-  <div class="card w-[28rem] bg-[#242526] shadow-xl">
+  <div class="card w-[28rem] bg-neutral shadow-xl">
     <form @submit.prevent="submit">
-      <div class="border-b py-6 border-[#2f3031] flex justify-between">
+      <div class="border-b py-6 border-accent flex justify-between">
         <div class="px-6">
           <p class="font-bold text-2xl">Sign up</p>
           <p>It's quick and easy.</p>
         </div>
         <div
           @click="$emit('close')"
-          class="bg-[#3a3b3c] mr-4 rounded-full hover:bg-[#4e4f50] cursor-pointer float-right h-fit"
+          class="btn btn-circle btn-accent btn-sm w-fit mr-4 cursor-pointer float-right h-fit"
         >
           <span class="material-symbols-outlined p-2 select-none">close</span>
         </div>
@@ -30,7 +30,7 @@
               name="firstname"
               type="text"
               placeholder="First name"
-              class="input w-full max-w-xs bg-[#18191a]"
+              class="input w-full max-w-xs bg-base-100"
             />
           </div>
           <div class="flex flex-col gap-4">
@@ -46,7 +46,7 @@
               name="surname"
               type="text"
               placeholder="Surname"
-              class="input w-full max-w-xs bg-[#18191a]"
+              class="input w-full max-w-xs bg-base-100"
             />
           </div>
         </div>
@@ -61,7 +61,7 @@
           name="email"
           type="text"
           placeholder="Email address"
-          class="input w-full bg-[#18191a]"
+          class="input w-full bg-base-100"
         />
         <component
           :is="form.errors.password ? 'div' : 'div'"
@@ -75,32 +75,32 @@
           name="password"
           type="password"
           placeholder="Password"
-          class="input w-full bg-[#18191a]"
+          class="input w-full bg-base-100"
         />
         <p class="text-xs">
           People who use our service may have uploaded your contact information
           to Pelerbook.
-          <Link href="/help" class="text-blue-400 hover:underline"
+          <Link href="/help" class="text-primary hover:underline"
             >Learn more.</Link
           >
         </p>
         <p class="text-xs">
           By clicking Sign Up, you agree to our
-          <Link href="/about/terms" class="text-blue-400 hover:underline"
+          <Link href="/about/terms" class="text-primary hover:underline"
             >Terms</Link
           >,
-          <Link href="/about/privacy" class="text-blue-400 hover:underline"
+          <Link href="/about/privacy" class="text-primary hover:underline"
             >Privacy Policy</Link
           >
           and
-          <Link href="/about/cookies" class="text-blue-400 hover:underline"
+          <Link href="/about/cookies" class="text-primary hover:underline"
             >Cookies Policy</Link
           >. You may receive SMS notifications from us and can opt out at any
           time.
         </p>
         <button
           href="/register"
-          class="btn btn-success normal-case w-2/3 mx-auto mt-2"
+          class="btn btn-secondary normal-case w-2/3 mx-auto mt-2"
           :disabled="form.processing"
         >
           Sign up
@@ -110,9 +110,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useForm } from "@inertiajs/vue3";
-const form = useForm({
+const form = useForm<any>({
   firstname: "",
   surname: "",
   email: "",

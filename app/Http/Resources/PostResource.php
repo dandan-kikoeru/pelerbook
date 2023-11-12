@@ -20,10 +20,11 @@ class PostResource extends JsonResource
     return [
       "id" => $this->id,
       "caption" => Formatting::format_message($this->caption),
-      "created_at" => $this->created_at->diffForHumans(),
+      "createdAt" => $this->created_at->diffForHumans(),
       "user" => new UserResource($this->user),
       "likes" => $this->likes->count(),
-      "liked_by_user" => $this->likes->where('user_id', Auth()->user()->id)->isNotEmpty(),
+      "likedByUser" => $this->likes->where('user_id', Auth()->user()->id)->isNotEmpty(),
+      "image" => $this->image,
     ];
 
   }

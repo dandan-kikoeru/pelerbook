@@ -8,7 +8,7 @@
       removeHtmlTags(post.data.caption)
     "
   />
-  <div class="card max-w-lg bg-[#242526] shadow-xl mx-auto mt-4">
+  <div class="card max-w-lg bg-neutral shadow-xl mx-auto mt-4">
     <Post :post="post.data" :auth="auth" />
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[#232425] rounded-xl p-2 shadow-lg">
+  <div class="bg-neutral rounded-xl p-2 shadow-lg">
     <ul>
       <li class="w-96">
         <DropdownLink
@@ -7,6 +7,7 @@
           as="button"
           icon="person"
           :label="auth.user.firstname + ' ' + auth.user.surname"
+          :class="{ 'bg-accent': $page.url.startsWith(`/${auth.user.id}`) }"
         />
       </li>
       <li class="w-96">
@@ -15,6 +16,7 @@
           as="button"
           icon="settings"
           label="Settings"
+          :class="{ 'bg-accent': $page.component === 'Settings' }"
         />
       </li>
       <li class="w-96">

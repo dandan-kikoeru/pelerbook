@@ -1,7 +1,7 @@
 <template>
   <Head title="Pelerbook"></Head>
-  <div class="bg-[#242526] h-32 p-4 rounded-lg mt-6 max-w-lg mx-auto">
-    <div class="flex gap-4 border-b pb-4 border-[#3a3b3c]">
+  <div class="bg-neutral h-32 p-4 rounded-2xl mt-4 max-w-lg mx-auto">
+    <div class="flex gap-4 border-b pb-4 border-accent">
       <Link class="aspect-square h-12" :href="'/' + auth.user.id">
         <img
           :src="auth.user.avatar"
@@ -10,7 +10,7 @@
       </Link>
       <button
         @click="showCreatePost"
-        class="bg-[#3a3b3c] hover:bg-[#4e4f50] w-full rounded-full px-6 py-3 text-start"
+        class="bg-accent hover:bg-accent w-full rounded-full px-6 py-3 text-start"
         v-html="`What's on your mind, ` + auth.user.firstname + `?`"
       />
     </div>
@@ -24,7 +24,7 @@
   </div>
   <div
     v-for="post in posts.data"
-    class="card max-w-lg bg-[#242526] shadow-xl mx-auto mt-4"
+    class="card max-w-lg bg-neutral mx-auto mt-4"
     :key="post.id"
   >
     <Post :post="post" :auth="auth" />

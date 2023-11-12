@@ -18,7 +18,7 @@ class Formatting
 
     $url = preg_replace(
       '/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#\=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\=]*)/',
-      '<a class="text-blue-500 hover:underline" href="$0" target="_blank">$0</a>',
+      '<a class="text-primary hover:underline" href="$0" target="_blank">$0</a>',
       $monospace
     );
 

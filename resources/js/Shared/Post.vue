@@ -15,33 +15,32 @@
           {{ post.user.firstname }} {{ post.user.surname }} </Link
         ><br />
         <Link :href="'/post/' + post.id" class="hover:underline text-sm">
-          {{ post.created_at }}
+          {{ post.createdAt }}
         </Link>
       </div>
     </div>
     <div
       v-if="post.user.id == auth.user.id"
       @click="togglePopup"
-      class="absolute right-4 hover:bg-[#3a3b3c] rounded-full cursor-pointer"
+      class="absolute right-4 hover:bg-accent btn btn-ghost btn-circle"
     >
-      <span class="material-symbols-outlined p-2 select-none">
-        more_horiz
-      </span>
+      <span class="material-symbols-outlined p-2 select-none">more_horiz</span>
     </div>
     <p v-html="post.caption" class="pb-2" />
+    <img :src="post.image" />
     <p v-if="post.likes" class="flex gap-1">
-      <span class="material-symbols-outlined text-[#0065ff]"> thumb_up </span
+      <span class="material-symbols-outlined text-primary"> thumb_up </span
       >{{ post.likes }}
     </p>
-    <div class="border-[#3e4042] border-y py-1">
+    <div class="border-accent border-y py-1">
       <Link
         as="button"
         method="post"
         :href="`/api/like/${post.id}`"
         :class="
-          post.liked_by_user
-            ? 'btn btn-ghost btn-block text-[#0065ff] normal-case'
-            : 'btn btn-ghost btn-block active:text-[#0065ff] normal-case'
+          post.likedByUser
+            ? 'btn btn-ghost btn-block text-primary normal-case'
+            : 'btn btn-ghost btn-block active:text-primary normal-case'
         "
         preserve-scroll
       >
@@ -53,20 +52,21 @@
   <div
     v-if="showPopup"
     id="popup"
-    class="absolute top-16 right-8 bg-[#242526] shadow-[0px_0px_15px_15px_rgba(0,0,0,0.1)] p-2 rounded-2xl z-20"
+    class="absolute top-16 right-8 bg-neutral shadow-[0px_0px_15px_15px_rgba(0,0,0,0.1)] p-2 rounded-2xl z-20"
   >
     <button
       @click="toggleEdit()"
-      class="text-start hover:bg-[#3a3b3c] p-2 rounded-md w-80 flex"
+      class="text-start hover:bg-accent p-2 rounded-md w-80 flex"
     >
       <span class="material-symbols-outlined align-middle">edit</span>
       <span class="align-text-top ml-2">Edit post</span>
     </button>
     <Link
-      class="text-start hover:bg-[#3a3b3c] p-2 rounded-md w-80 flex"
+      class="text-start hover:bg-accent p-2 rounded-md w-80 flex"
       method="post"
       :href="'/api/post/destroy/' + post.id"
       as="button"
+      preserve-scroll
     >
       <span class="material-symbols-outlined align-middle">delete</span>
       <span class="align-text-top ml-2">Delete post</span>
