@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 const { icon, label } = defineProps<{
-  icon: string;
-  label: string;
-}>();
+  icon: string
+  label: string
+}>()
 </script>

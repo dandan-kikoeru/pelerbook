@@ -27,6 +27,8 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/api/post/update/{id}', [PostController::class, 'update']);
   Route::post('/api/post/destroy/{id}', [PostController::class, 'destroy']);
 
+  Route::get('/api/post', [PostController::class, 'index']);
+  Route::get('/api/post/{id}', [PostController::class, 'show']);
   Route::post('/api/like/{id}', [LikeController::class, 'like']);
 });
 
@@ -49,12 +51,9 @@ Route::middleware(['auth'])->group(function () {
    */
 
   Route::get('/', function (Request $request) {
-    $posts = Post::latest()->get();
-
-    return Inertia::render('Home', [
-      'posts' => PostResource::collection($posts),
-    ]);
+    return Inertia::render('Home');
   });
+
 
   Route::get('/settings', function () {
     return Inertia::render('Settings');

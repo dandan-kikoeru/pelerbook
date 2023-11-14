@@ -73,76 +73,94 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { useForm } from '@inertiajs/vue3'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useEventListener } from '@vueuse/core'
 
 const form = useForm<any>({
-  caption: "",
+  caption: '',
   image: null,
-});
+})
 
-const fileInputRef = ref(null);
+const fileInputRef = ref(null)
 
 const openFileInput = () => {
-  fileInputRef.value.click();
-};
+  fileInputRef.value.click()
+}
 
-const emit = defineEmits(["close"]);
-const captionError = ref(false);
+const emit = defineEmits(['close'])
+const captionError = ref(false)
 
 const submit = () => {
-  imageError.value = false;
-  form.post("/api/post/store", {
+  imageError.value = false
+  form.post('/api/post/store', {
     onSuccess: () => {
-      emit("close");
+      emit('close')
     },
     onError: () => {
-      captionError.value = true;
+      captionError.value = true
     },
-  });
-};
+    preserveScroll: true,
+  })
+}
 
 defineProps<{
-  firstname: string;
-}>();
+  firstname: string
+}>()
 
 const handleTextArea = () => {
-  captionError.value = false;
-  const textarea = document.querySelector("textarea");
+  captionError.value = false
+  const textarea = document.querySelector('textarea')
   if (textarea) {
-    textarea.style.height = "auto";
-    textarea.style.height = `${textarea.scrollHeight}px`;
+    textarea.style.height = 'auto'
+    textarea.style.height = `${textarea.scrollHeight}px`
   }
-};
+}
 
-const imagePreview = ref(null);
-const imageError = ref(false);
+const imagePreview = ref(null)
+const imageError = ref(false)
 
-const handleImagePreview = (event) => {
-  const inputElement = event.target;
-  const file = inputElement.files[0];
+const handleImagePreview = (e) => {
+  const inputElement = e.target
+  const file = inputElement.files[0]
 
   if (file && isValidImageFile(file)) {
-    const reader = new FileReader();
+    const reader = new FileReader()
 
     reader.onload = () => {
-      imagePreview.value = reader.result;
-    };
+      imagePreview.value = reader.result
+    }
 
-    imageError.value = false;
-    reader.readAsDataURL(file);
+    imageError.value = false
+    reader.readAsDataURL(file)
   } else {
-    form.image = "";
-    imageError.value = true;
+    form.image = ''
+    imageError.value = true
   }
-};
+}
 
 const isValidImageFile = (file) => {
-  const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
+  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp']
   const fileExtension = file.name
     .toLowerCase()
-    .substring(file.name.lastIndexOf("."));
+    .substring(file.name.lastIndexOf('.'))
 
-  return allowedExtensions.includes(fileExtension);
-};
+  return allowedExtensions.includes(fileExtension)
+}
+
+useEventListener(document, 'keydown', (e) => {
+  if (e.key === 'Escape') {
+    emit('close')
+  }
+})
+
+onMounted(() => {
+  document.body.classList.add('overflow-hidden', 'mr-[1vw]')
+  document.body.classList.remove('overflow-y-scroll')
+})
+
+onUnmounted(() => {
+  document.body.classList.remove('overflow-hidden', 'mr-[1vw]')
+  document.body.classList.add('overflow-y-scroll')
+})
 </script>

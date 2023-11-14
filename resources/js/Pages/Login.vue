@@ -75,40 +75,40 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useForm } from "@inertiajs/vue3";
-import Register from "../Shared/Register.vue";
-import { ref } from "vue";
-import Toast from "../Components/Toast.vue";
+import { useForm } from '@inertiajs/vue3'
+import Register from '../Shared/Register.vue'
+import { ref } from 'vue'
+import Toast from '../Components/Toast.vue'
 
 defineOptions({
   layout: null,
-});
+})
 
 const form = useForm<any>({
-  email: "",
-  password: "",
-});
+  email: '',
+  password: '',
+})
 
 const submit = () => {
-  form.post("/api/user/login");
-};
+  form.post('/api/user/login')
+}
 
-const showRegister = ref(false);
+const showRegister = ref(false)
 
 const handleClick = (e: Event) => {
-  const register = document.getElementById("register");
+  const register = document.getElementById('register')
   if (e.target == register) {
-    return toggleRegister();
+    return toggleRegister()
   }
-};
+}
 
 const toggleRegister = () => {
-  showRegister.value = !showRegister.value;
+  showRegister.value = !showRegister.value
   if (!showRegister.value) {
-    return document.removeEventListener("click", handleClick);
+    return document.removeEventListener('click', handleClick)
   }
   setTimeout(() => {
-    document.addEventListener("click", handleClick);
-  }, 100);
-};
+    document.addEventListener('click', handleClick)
+  }, 100)
+}
 </script>

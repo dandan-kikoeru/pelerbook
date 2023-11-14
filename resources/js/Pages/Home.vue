@@ -9,7 +9,7 @@
         />
       </Link>
       <button
-        @click="showCreatePost"
+        @click="toggleCreatePost"
         class="bg-accent hover:bg-accent w-full rounded-full px-6 py-3 text-start"
         v-html="`What's on your mind, ` + auth.user.firstname + `?`"
       />
@@ -17,46 +17,84 @@
   </div>
   <div
     class="fixed top-0 w-screen h-screen flex justify-center items-center bg-black/50 z-50"
-    v-if="createPost"
+    v-if="showCreatePost"
     id="createpostpopup"
   >
-    <CreatePost :firstname="auth.user.firstname" @close="showCreatePost" />
+    <CreatePost
+      :firstname="auth.user.firstname"
+      @close="toggleCreatePost"
+      ref="createPost"
+    />
   </div>
   <div
-    v-for="post in posts.data"
+    v-for="(post, index) in posts.data"
     class="card max-w-lg bg-neutral mx-auto mt-4"
     :key="post.id"
+    ref="postsContainer"
   >
-    <Post :post="post" :auth="auth" />
+    <Post
+      :post="post"
+      :auth="auth"
+      :postIndex="index"
+      @refetch-post="refetchPost"
+      @refetch-data="refetchData"
+    />
   </div>
+  <div class="-translate-y-[64rem]" ref="target"></div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
-import CreatePost from "../Shared/CreatePost.vue";
-import Post from "../Shared/Post.vue";
-import type { AuthType } from "@/AuthType.ts";
-import type { PostsType } from "@/PostsType";
+import { ref } from 'vue'
+import CreatePost from '../Shared/CreatePost.vue'
+import Post from '../Shared/Post.vue'
+import type { AuthType } from '@/AuthType'
+import type { PostsType } from '@/PostsType'
+import { onClickOutside, useIntersectionObserver } from '@vueuse/core'
+import axios from 'axios'
 
-const { posts, auth } = defineProps<{
-  posts: PostsType;
-  auth: AuthType;
-}>();
+const { auth } = defineProps<{
+  auth: AuthType
+}>()
 
-const createPost = ref<boolean>(false);
+const posts = ref<any>({ data: [] })
+const page = ref<number>(1)
 
-const handleClickCreate = (e: Event) => {
-  const createpostpopup = document.getElementById("createpostpopup");
-  if (e.target == createpostpopup) {
-    return showCreatePost();
+const fetchData = async () => {
+  const response = await axios.get(`/api/post?page=${page.value}`)
+  posts.value.data = [...posts.value.data, ...response.data.data]
+  posts.value.links = response.data.links
+  page.value++
+}
+
+const refetchPost = async (postIndex) => {
+  const response = await axios.get(
+    `/api/post/${posts.value.data[postIndex].id}`
+  )
+  posts.value.data[postIndex] = response.data.data
+}
+
+const refetchData = async () => {
+  const response = await axios.get(`/api/post?take=${page.value - 1}`)
+  posts.value.data = [...response.data.data]
+}
+
+const target = ref<HTMLElement | null>(null)
+const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
+  if (!isIntersecting) {
+    return
   }
-};
-const showCreatePost = () => {
-  createPost.value = !createPost.value;
-  if (createPost.value) {
-    document.addEventListener("click", handleClickCreate);
-    return document.body.classList.add("overflow-hidden");
+  fetchData()
+  if (!posts.value.links.next) {
+    stop()
   }
-  document.removeEventListener("click", handleClickCreate);
-  document.body.classList.remove("overflow-hidden");
-};
+})
+fetchData()
+
+const showCreatePost = ref<boolean>(false)
+const createPost = ref<HTMLElement | null>(null)
+
+const toggleCreatePost = () => {
+  showCreatePost.value = !showCreatePost.value
+}
+
+onClickOutside(createPost, () => toggleCreatePost())
 </script>

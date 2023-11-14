@@ -33,18 +33,19 @@
       >{{ post.likes }}
     </p>
     <div class="border-accent border-y py-1">
-      <form @submit.prevent="() => likePost(post.id)">
-        <button
-          :class="
-            post.likedByUser
-              ? 'btn btn-ghost btn-block text-primary normal-case'
-              : 'btn btn-ghost btn-block active:text-primary normal-case'
-          "
-          preserve-scroll
-        >
-          <span class="material-symbols-outlined"> thumb_up </span>Like
-        </button>
-      </form>
+      <Link
+        as="button"
+        method="post"
+        :href="`/api/like/${post.id}`"
+        :class="
+          post.likedByUser
+            ? 'btn btn-ghost btn-block text-primary normal-case'
+            : 'btn btn-ghost btn-block active:text-primary normal-case'
+        "
+        preserve-scroll
+      >
+        <span class="material-symbols-outlined"> thumb_up </span>Like
+      </Link>
     </div>
   </div>
 
@@ -60,22 +61,21 @@
       <span class="material-symbols-outlined align-middle">edit</span>
       <span class="align-text-top ml-2">Edit post</span>
     </button>
-    <form @submit.prevent="() => deletePost(post.id)">
-      <button class="text-start hover:bg-accent p-2 rounded-md w-80 flex">
-        <span class="material-symbols-outlined align-middle">delete</span>
-        <span class="align-text-top ml-2">Delete post</span>
-      </button>
-    </form>
+    <Link
+      class="text-start hover:bg-accent p-2 rounded-md w-80 flex"
+      method="post"
+      :href="'/api/post/destroy/' + post.id"
+      as="button"
+      preserve-scroll
+    >
+      <span class="material-symbols-outlined align-middle">delete</span>
+      <span class="align-text-top ml-2">Delete post</span>
+    </Link>
     <div
       v-if="showEdit"
       class="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-black/50 z-50"
     >
-      <EditPost
-        :post="post"
-        @close-edit="toggleEdit"
-        ref="edit"
-        @refetch-post="refetchPost"
-      />
+      <EditPost :post="post" @close-edit="toggleEdit" ref="edit" />
     </div>
   </div>
 </template>
@@ -85,19 +85,11 @@ import EditPost from './EditPost.vue'
 import type { PostType } from '@/PostType'
 import type { AuthType } from '@/AuthType'
 import { onClickOutside } from '@vueuse/core'
-import { useForm } from '@inertiajs/vue3'
 
-const emit = defineEmits(['refetchPost', 'refetchData'])
-
-const { post, auth, postIndex } = defineProps<{
+const { post, auth } = defineProps<{
   post: PostType
   auth: AuthType
-  postIndex: number
 }>()
-
-const refetchPost = () => {
-  emit('refetchPost', postIndex)
-}
 
 const showDropdown = ref<boolean>(false)
 const dropdown = ref(null)
@@ -110,24 +102,4 @@ const edit = ref(null)
 
 const toggleEdit = () => (showEdit.value = !showEdit.value)
 onClickOutside(edit, () => toggleEdit())
-
-const formDelete = useForm({})
-const deletePost = (id: string) => {
-  formDelete.post(`/api/post/destroy/${id}`, {
-    onSuccess: () => {
-      emit('refetchData')
-    },
-    preserveScroll: true,
-  })
-}
-
-const formLike = useForm({})
-const likePost = (id: string) => {
-  formDelete.post(`/api/like/${id}`, {
-    onSuccess: () => {
-      emit('refetchData')
-    },
-    preserveScroll: true,
-  })
-}
 </script>

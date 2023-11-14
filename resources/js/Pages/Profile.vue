@@ -40,7 +40,7 @@
         />
       </Link>
       <button
-        @click="showCreatePost"
+        @click="toggleCreatePost"
         class="bg-accent w-full rounded-full px-6 py-3 text-start"
         v-html="`What's on your mind, ` + auth.user.firstname + `?`"
       />
@@ -48,10 +48,14 @@
   </div>
   <div
     class="fixed top-0 w-screen h-screen flex justify-center items-center bg-black/50 z-50 rounded-xl"
-    v-if="createPost"
+    v-if="showCreatePost"
     id="post"
   >
-    <CreatePost :firstname="auth.user.firstname" @close="showCreatePost" />
+    <CreatePost
+      :firstname="auth.user.firstname"
+      @close="toggleCreatePost"
+      ref="createPost"
+    />
   </div>
 
   <div
@@ -63,26 +67,25 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
-import CreatePost from "../Shared/CreatePost.vue";
-import Post from "../Shared/Post.vue";
-import type { UserType } from "@/UserType";
-import type { AuthType } from "@/AuthType";
-import type { PostsType } from "@/PostsType";
+import { ref } from 'vue'
+import CreatePost from '../Shared/CreatePost.vue'
+import Post from '../Shared/Post.vue'
+import type { UserType } from '@/UserType'
+import type { AuthType } from '@/AuthType'
+import type { PostsType } from '@/PostsType'
+import { onClickOutside } from '@vueuse/core'
 
 const { posts, auth, profile } = defineProps<{
-  posts: PostsType;
-  auth: AuthType;
-  profile: UserType;
-}>();
+  posts: PostsType
+  auth: AuthType
+  profile: UserType
+}>()
 
-const createPost = ref<boolean>(false);
+const showCreatePost = ref<boolean>(false)
+const createPost = ref(null)
 
-const showCreatePost = () => {
-  createPost.value = !createPost.value;
-  if (createPost.value) {
-    return document.body.classList.add("overflow-hidden");
-  }
-  document.body.classList.remove("overflow-hidden");
-};
+const toggleCreatePost = () => {
+  showCreatePost.value = !showCreatePost.value
+}
+onClickOutside(createPost, () => toggleCreatePost())
 </script>

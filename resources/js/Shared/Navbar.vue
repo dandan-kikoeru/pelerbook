@@ -21,31 +21,31 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
-import Dropdown from "./Dropdown.vue";
-import { Link } from "@inertiajs/vue3";
-import type { AuthType } from "@/AuthType";
+import { ref } from 'vue'
+import Dropdown from './Dropdown.vue'
+import { Link } from '@inertiajs/vue3'
+import type { AuthType } from '@/AuthType'
 
 defineProps<{
-  auth: AuthType;
-}>();
+  auth: AuthType
+}>()
 
-const showDropdown = ref(false);
+const showDropdown = ref(false)
 
 const handleClick = (e: Event) => {
-  const dropdown = document.getElementById("dropdown");
+  const dropdown = document.getElementById('dropdown')
   if (e.target !== dropdown) {
-    return toggleDropdown();
+    return toggleDropdown()
   }
-};
+}
 
 const toggleDropdown = () => {
-  showDropdown.value = !showDropdown.value;
+  showDropdown.value = !showDropdown.value
   if (!showDropdown.value) {
-    return document.removeEventListener("click", handleClick);
+    return document.removeEventListener('click', handleClick)
   }
   setTimeout(() => {
-    document.addEventListener("click", handleClick);
-  }, 100);
-};
+    document.addEventListener('click', handleClick)
+  }, 100)
+}
 </script>

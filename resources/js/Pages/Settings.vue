@@ -91,13 +91,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
-import type { AuthType } from "@/AuthType";
+import { useForm } from '@inertiajs/vue3'
+import { ref } from 'vue'
+import type { AuthType } from '@/AuthType'
 
 const { auth } = defineProps<{
-  auth: AuthType;
-}>();
+  auth: AuthType
+}>()
 
 /**
  *  * Avatar
@@ -105,43 +105,43 @@ const { auth } = defineProps<{
 
 const avatarForm = useForm({
   avatar: auth.user.avatar,
-});
+})
 
 const submitAvatar = () => {
-  avatarForm.post("/api/user/update", {
+  avatarForm.post('/api/user/update', {
     onSuccess: () => {
-      avatarForm.avatar = auth.user.avatar;
+      avatarForm.avatar = auth.user.avatar
     },
-  });
-};
+  })
+}
 
-const avatarInputRef = ref(null);
-const avatarError = ref(false);
-const avatarPreview = ref<any>(auth.user.avatar);
+const avatarInputRef = ref(null)
+const avatarError = ref(false)
+const avatarPreview = ref<any>(auth.user.avatar)
 
 const openAvatarInput = () => {
-  avatarInputRef.value.click();
-};
+  avatarInputRef.value.click()
+}
 
 const handleAvatarPreview = (event) => {
-  const inputElement = event.target;
-  const file = inputElement.files[0];
+  const inputElement = event.target
+  const file = inputElement.files[0]
 
   if (file && isValidImageFile(file)) {
-    const reader = new FileReader();
+    const reader = new FileReader()
 
     reader.onload = () => {
-      avatarPreview.value = reader.result;
-    };
+      avatarPreview.value = reader.result
+    }
 
-    avatarError.value = false;
-    reader.readAsDataURL(file);
+    avatarError.value = false
+    reader.readAsDataURL(file)
   } else {
-    avatarForm.avatar = auth.user.avatar;
-    avatarPreview.value = auth.user.avatar;
-    avatarError.value = true;
+    avatarForm.avatar = auth.user.avatar
+    avatarPreview.value = auth.user.avatar
+    avatarError.value = true
   }
-};
+}
 
 /**
  *  * Cover
@@ -149,50 +149,50 @@ const handleAvatarPreview = (event) => {
 
 const coverForm = useForm({
   cover: auth.user.cover,
-});
+})
 
 const submitCover = () => {
-  coverForm.post("/api/user/update", {
+  coverForm.post('/api/user/update', {
     onSuccess: () => {
-      coverForm.cover = auth.user.cover;
+      coverForm.cover = auth.user.cover
     },
-  });
-};
+  })
+}
 
-const coverInputRef = ref(null);
-const coverError = ref(false);
-const coverPreview = ref<any>(auth.user.cover);
+const coverInputRef = ref(null)
+const coverError = ref(false)
+const coverPreview = ref<any>(auth.user.cover)
 
 const openCoverInput = () => {
-  coverInputRef.value.click();
-};
+  coverInputRef.value.click()
+}
 
 const handleCoverPreview = (event) => {
-  const inputElement = event.target;
-  const file = inputElement.files[0];
+  const inputElement = event.target
+  const file = inputElement.files[0]
 
   if (file && isValidImageFile(file)) {
-    const reader = new FileReader();
+    const reader = new FileReader()
 
     reader.onload = () => {
-      coverPreview.value = reader.result;
-    };
+      coverPreview.value = reader.result
+    }
 
-    coverError.value = false;
-    reader.readAsDataURL(file);
+    coverError.value = false
+    reader.readAsDataURL(file)
   } else {
-    coverForm.cover = auth.user.cover;
-    coverPreview.value = auth.user.cover;
-    coverError.value = true;
+    coverForm.cover = auth.user.cover
+    coverPreview.value = auth.user.cover
+    coverError.value = true
   }
-};
+}
 
 const isValidImageFile = (file) => {
-  const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
+  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp']
   const fileExtension = file.name
     .toLowerCase()
-    .substring(file.name.lastIndexOf("."));
+    .substring(file.name.lastIndexOf('.'))
 
-  return allowedExtensions.includes(fileExtension);
-};
+  return allowedExtensions.includes(fileExtension)
+}
 </script>

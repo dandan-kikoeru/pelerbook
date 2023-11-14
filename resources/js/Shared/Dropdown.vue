@@ -32,10 +32,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { AuthType } from "@/AuthType";
-import DropdownLink from "../Components/DropdownLink.vue";
+import type { AuthType } from '@/AuthType'
+import DropdownLink from '../Components/DropdownLink.vue'
 
 defineProps<{
-  auth: AuthType;
-}>();
+  auth: AuthType
+}>()
 </script>

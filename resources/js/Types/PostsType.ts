@@ -1,9 +1,5 @@
-import type { PostType } from "@/PostType.ts";
+import type { PostType } from '@/PostType'
 
 export interface PostsType {
-  data: PostType[];
-  meta: {
-  path: string;
-    next_cursor: string | null;
-  };
+  data: PostType[]
 }

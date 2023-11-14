@@ -13,16 +13,16 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { PostType } from "@/PostType";
-import Post from "../Shared/Post.vue";
-import type { AuthType } from "@/AuthType";
+import type { PostType } from '@/PostType'
+import Post from '../Shared/Post.vue'
+import type { AuthType } from '@/AuthType'
 
 const { post, auth } = defineProps<{
-  post: { data: PostType };
-  auth: AuthType;
-}>();
+  post: { data: PostType }
+  auth: AuthType
+}>()
 
 const removeHtmlTags = (input) => {
-  return input.replace(/<\/?[^>]+(>|$)/g, "");
-};
+  return input.replace(/<\/?[^>]+(>|$)/g, '')
+}
 </script>

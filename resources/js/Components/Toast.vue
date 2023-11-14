@@ -4,13 +4,13 @@
   </div>
 </template>
 <script setup>
-import { onMounted } from "vue";
+import { onMounted } from 'vue'
 
-const emit = defineEmits();
+const emit = defineEmits()
 
 onMounted(() => {
   setTimeout(() => {
-    emit("close");
-  }, 5000);
-});
+    emit('close')
+  }, 5000)
+})
 </script>

@@ -111,17 +111,17 @@
 </template>
 
 <script setup lang="ts">
-import { useForm } from "@inertiajs/vue3";
+import { useForm } from '@inertiajs/vue3'
 const form = useForm<any>({
-  firstname: "",
-  surname: "",
-  email: "",
-  password: "",
-});
+  firstname: '',
+  surname: '',
+  email: '',
+  password: '',
+})
 
 const submit = () => {
-  form.post("/api/user/register");
-};
+  form.post('/api/user/register')
+}
 
-defineEmits(["close"]);
+defineEmits(['close'])
 </script>

@@ -73,107 +73,122 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { PostType } from "@/PostType";
-import { useForm } from "@inertiajs/vue3";
-import { ref, onMounted } from "vue";
+import type { PostType } from '@/PostType'
+import { useForm } from '@inertiajs/vue3'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useEventListener } from '@vueuse/core'
 
 // create a JavaScript function that removes HTML tags and reverts the formatting back to the original format
 const revertFormatting = (htmlString: string) => {
   // Decode HTML entities
-  let decodedString = document.createElement("textarea");
-  decodedString.innerHTML = htmlString;
-  let plainText = decodedString.value;
+  let decodedString = document.createElement('textarea')
+  decodedString.innerHTML = htmlString
+  let plainText = decodedString.value
 
   // Revert formatting
-  let revertedString: string = plainText.replace(/<b>(.*?)<\/b>/g, "*$1*");
-  revertedString = revertedString.replace(/<i>(.*?)<\/i>/g, "_$1_");
-  revertedString = revertedString.replace(/<strike>(.*?)<\/strike>/g, "~$1~");
-  revertedString = revertedString.replace(/<code>(.*?)<\/code>/g, "```$1```");
+  let revertedString: string = plainText.replace(/<b>(.*?)<\/b>/g, '*$1*')
+  revertedString = revertedString.replace(/<i>(.*?)<\/i>/g, '_$1_')
+  revertedString = revertedString.replace(/<strike>(.*?)<\/strike>/g, '~$1~')
+  revertedString = revertedString.replace(/<code>(.*?)<\/code>/g, '```$1```')
   revertedString = revertedString.replace(
     /<a class="text-primary hover:underline" href="(.*?)" target="_blank">(.*?)<\/a>/g,
-    "$1"
-  );
+    '$1'
+  )
   revertedString = revertedString.replace(/&#x(.*?);/g, function (match, p1) {
-    return `\\u${p1}`;
-  });
+    return `\\u${p1}`
+  })
   // revertedString = revertedString.replace(/<\/?[^>]+(>|$)/g, "");
-  revertedString = revertedString.replace(/<br \/>/g, "");
-  return revertedString;
-};
+  revertedString = revertedString.replace(/<br \/>/g, '')
+  return revertedString
+}
 
 const { post } = defineProps<{
-  post: PostType;
-}>();
+  post: PostType
+}>()
 
 const form = useForm<any>({
   caption: revertFormatting(post.caption),
   image: post.image,
-});
+})
 
 const handleTextArea = () => {
-  captionError.value = false;
-  const textarea = document.querySelector("textarea");
+  captionError.value = false
+  const textarea = document.querySelector('textarea')
   if (textarea) {
-    textarea.style.height = "full";
-    textarea.style.height = `${textarea.scrollHeight}px`;
+    textarea.style.height = 'full'
+    textarea.style.height = `${textarea.scrollHeight}px`
   }
-};
+}
 
-const captionError = ref(false);
+const captionError = ref(false)
 
 const submit = (id: string) => {
-  imageError.value = false;
+  imageError.value = false
   form.post(`/api/post/update/${id}`, {
     onSuccess: () => {
-      emit("closeEdit");
+      emit('closeEdit')
     },
     onError: () => {
-      captionError.value = true;
+      captionError.value = true
     },
     preserveScroll: true,
-  });
-};
+  })
+}
 
-const emit = defineEmits(["closeEdit"]);
+const emit = defineEmits(['closeEdit', 'refetchPost'])
 
-const fileInputRef = ref(null);
+const fileInputRef = ref(null)
 
 const openFileInput = () => {
-  fileInputRef.value.click();
-};
+  fileInputRef.value.click()
+}
 
-const imagePreview = ref<any>(post.image);
-const imageError = ref(false);
+const imagePreview = ref<any>(post.image)
+const imageError = ref(false)
 
 const handleImagePreview = (event) => {
-  const inputElement = event.target;
-  const file = inputElement.files[0];
+  const inputElement = event.target
+  const file = inputElement.files[0]
 
   if (file && isValidImageFile(file)) {
-    const reader = new FileReader();
+    const reader = new FileReader()
 
     reader.onload = () => {
-      imagePreview.value = reader.result;
-    };
+      imagePreview.value = reader.result
+    }
 
-    imageError.value = false;
-    reader.readAsDataURL(file);
+    imageError.value = false
+    reader.readAsDataURL(file)
   } else {
-    form.image = "";
-    imageError.value = true;
+    form.image = ''
+    imageError.value = true
   }
-};
+}
 
 const isValidImageFile = (file) => {
-  const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
+  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp']
   const fileExtension = file.name
     .toLowerCase()
-    .substring(file.name.lastIndexOf("."));
+    .substring(file.name.lastIndexOf('.'))
 
-  return allowedExtensions.includes(fileExtension);
-};
+  return allowedExtensions.includes(fileExtension)
+}
+
+useEventListener(document, 'keydown', (e) => {
+  if (e.key === 'Escape') {
+    emit('closeEdit')
+  }
+})
 
 onMounted(() => {
-  handleTextArea();
-});
+  handleTextArea()
+  document.body.classList.add('overflow-hidden', 'mr-[1vw]')
+  document.body.classList.remove('overflow-y-scroll')
+})
+
+onUnmounted(() => {
+  document.body.classList.remove('overflow-hidden', 'mr-[1vw]')
+  document.body.classList.add('overflow-y-scroll')
+  emit('refetchPost')
+})
 </script>

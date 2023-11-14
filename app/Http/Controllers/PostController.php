@@ -6,6 +6,7 @@ use App\Models\Post;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Resources\PostResource;
 use Image; // alias of Intervention\Image\ImageServiceProvider::class,
 
 
@@ -78,5 +79,18 @@ class PostController extends Controller
     }
     return abort(400);
   }
+  public function index(Request $request)
+  {
+    $takePage = $request->input('take', 1);
 
+    $posts = Post::latest()->paginate(10 * $takePage);
+
+    return PostResource::collection($posts);
+  }
+
+  public function show($id)
+  {
+    $post = Post::find($id);
+    return new PostResource($post);
+  }
 }
