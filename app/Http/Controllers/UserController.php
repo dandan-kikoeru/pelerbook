@@ -76,13 +76,14 @@ class UserController extends Controller
       $user->cover = '/covers/' . $coverName;
     }
 
-    // $request->validate([
-    //   'firstname' => ['required', 'regex:/^[A-Za-z]+$/'],
-    //   'surname' => ['required', 'regex:/^[A-Za-z]+$/'],
-    // ]);
-
-    // $user->firstname = $request->firstname;
-    // $user->surname = $request->surname;
+    if ($request->firstname) {
+      $request->validate([
+        'firstname' => ['required', 'regex:/^[A-Za-z]+$/'],
+        'surname' => ['required', 'regex:/^[A-Za-z]+$/'],
+      ]);
+      $user->firstname = $request->firstname;
+      $user->surname = $request->surname;
+    }
     $user->save();
 
     return back();

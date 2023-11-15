@@ -88,7 +88,7 @@ const openFileInput = () => {
   fileInputRef.value.click()
 }
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'refetchData'])
 const captionError = ref(false)
 
 const submit = () => {
@@ -162,5 +162,6 @@ onMounted(() => {
 onUnmounted(() => {
   document.body.classList.remove('overflow-hidden', 'mr-[1vw]')
   document.body.classList.add('overflow-y-scroll')
+  emit('refetchData')
 })
 </script>

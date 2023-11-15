@@ -27,7 +27,7 @@
       <span class="material-symbols-outlined p-2 select-none">more_horiz</span>
     </div>
     <p v-html="post.caption" class="pb-2" />
-    <img :src="post.image" />
+    <img :src="post.image" class="rounded-md"/>
     <p v-if="post.likes" class="flex gap-1">
       <span class="material-symbols-outlined text-primary"> thumb_up </span
       >{{ post.likes }}
@@ -73,7 +73,7 @@
       <EditPost
         :post="post"
         @close-edit="toggleEdit"
-        ref="edit"
+        ref="editPost"
         @refetch-post="refetchPost"
       />
     </div>
@@ -97,23 +97,24 @@ const { post, auth, postIndex } = defineProps<{
 
 const refetchPost = () => {
   emit('refetchPost', postIndex)
+  toggleDropdown()
 }
 
 const showDropdown = ref<boolean>(false)
-const dropdown = ref(null)
+const dropdown = ref<HTMLElement | null>(null)
 
 const toggleDropdown = () => (showDropdown.value = !showDropdown.value)
 onClickOutside(dropdown, () => toggleDropdown())
 
 const showEdit = ref<boolean>(false)
-const edit = ref(null)
+const editPost = ref<HTMLElement | null>(null)
 
 const toggleEdit = () => (showEdit.value = !showEdit.value)
-onClickOutside(edit, () => toggleEdit())
+onClickOutside(editPost, () => toggleEdit())
 
-const formDelete = useForm({})
+const form = useForm({})
 const deletePost = (id: string) => {
-  formDelete.post(`/api/post/destroy/${id}`, {
+  form.post(`/api/post/destroy/${id}`, {
     onSuccess: () => {
       emit('refetchData')
     },
@@ -121,9 +122,8 @@ const deletePost = (id: string) => {
   })
 }
 
-const formLike = useForm({})
 const likePost = (id: string) => {
-  formDelete.post(`/api/like/${id}`, {
+  form.post(`/api/like/${id}`, {
     onSuccess: () => {
       emit('refetchData')
     },

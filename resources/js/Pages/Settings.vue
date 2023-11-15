@@ -4,10 +4,27 @@
     class="card bg-neutral shadow-xl max-w-lg absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
   >
     <div class="card-body">
-      <div class="flex">
-        <input type="text" class="input" :value="auth.user.firstname" />
-        <input type="text" class="input" :value="auth.user.surname" />
-      </div>
+      <form @submit.prevent="submitName">
+        <div class="flex mx-auto gap-2">
+          <input
+            v-model="nameForm.firstname"
+            type="text"
+            class="input"
+            :placeholder="auth.user.firstname"
+            @input="handleName"
+          />
+          <input
+            v-model="nameForm.surname"
+            type="text"
+            class="input"
+            :placeholder="auth.user.surname"
+            @input="handleName"
+          />
+        </div>
+        <div class="flex">
+          <button class="btn btn-primary mx-auto mt-4" v-if="showNameSubmit">Save</button>
+        </div>
+      </form>
       <div>
         <div class="flex justify-between items-center">
           Profile Picture
@@ -54,7 +71,7 @@
           </div>
         </div>
         <form @submit.prevent="submitCover()">
-          <div class="flex flex-col mt-2">
+          <div class="mt-2">
             <input
               type="file"
               accept=".jpg, .jpeg, .png, .webp"
@@ -76,14 +93,16 @@
             <div
               class="relative aspect-[3/1] max-w-6xl mx-auto overflow-hidden rounded-xl bg-black"
               v-else
-            ></div>
-            <button
-              class="btn btn-primary mx-auto my-4 normal-case"
-              v-if="!coverError && coverForm.cover !== auth.user.cover"
-              :disabled="coverForm.processing"
-            >
-              Save
-            </button>
+            />
+            <div class="flex">
+              <button
+                class="btn btn-primary mx-auto my-4 normal-case"
+                v-if="!coverError && coverForm.cover !== auth.user.cover"
+                :disabled="coverForm.processing"
+              >
+                Save
+              </button>
+            </div>
           </div>
         </form>
       </div>
@@ -98,6 +117,34 @@ import type { AuthType } from '@/AuthType'
 const { auth } = defineProps<{
   auth: AuthType
 }>()
+
+/**
+ *  * Name
+ */
+
+const nameForm = useForm({
+  firstname: auth.user.firstname,
+  surname: auth.user.surname,
+})
+
+const submitName = () => {
+  nameForm.post('/api/user/update', {
+    onSuccess: () => {
+      showNameSubmit.value = false
+    },
+  })
+}
+
+const showNameSubmit = ref<boolean>(false)
+
+const handleName = () => {
+  if (
+    nameForm.firstname !== auth.user.firstname ||
+    nameForm.surname !== auth.user.surname
+  ) {
+    showNameSubmit.value = true
+  }
+}
 
 /**
  *  * Avatar
@@ -115,16 +162,16 @@ const submitAvatar = () => {
   })
 }
 
-const avatarInputRef = ref(null)
-const avatarError = ref(false)
+const avatarInputRef = ref<HTMLElement | null>(null)
+const avatarError = ref<boolean>(false)
 const avatarPreview = ref<any>(auth.user.avatar)
 
 const openAvatarInput = () => {
   avatarInputRef.value.click()
 }
 
-const handleAvatarPreview = (event) => {
-  const inputElement = event.target
+const handleAvatarPreview = (e) => {
+  const inputElement = e.target
   const file = inputElement.files[0]
 
   if (file && isValidImageFile(file)) {
@@ -159,16 +206,16 @@ const submitCover = () => {
   })
 }
 
-const coverInputRef = ref(null)
-const coverError = ref(false)
+const coverInputRef = ref<HTMLElement | null>(null)
+const coverError = ref<boolean>(false)
 const coverPreview = ref<any>(auth.user.cover)
 
 const openCoverInput = () => {
   coverInputRef.value.click()
 }
 
-const handleCoverPreview = (event) => {
-  const inputElement = event.target
+const handleCoverPreview = (e) => {
+  const inputElement = e.target
   const file = inputElement.files[0]
 
   if (file && isValidImageFile(file)) {

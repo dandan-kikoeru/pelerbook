@@ -126,7 +126,7 @@ const submit = (id: string) => {
   imageError.value = false
   form.post(`/api/post/update/${id}`, {
     onSuccess: () => {
-      emit('closeEdit')
+      emit('closeEdit'), emit('refetchPost')
     },
     onError: () => {
       captionError.value = true
@@ -189,6 +189,5 @@ onMounted(() => {
 onUnmounted(() => {
   document.body.classList.remove('overflow-hidden', 'mr-[1vw]')
   document.body.classList.add('overflow-y-scroll')
-  emit('refetchPost')
 })
 </script>

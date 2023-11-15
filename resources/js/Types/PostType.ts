@@ -1,4 +1,4 @@
-import type { UserType } from '@/UserType.ts'
+import type { UserType } from '@/UserType'
 
 export interface PostType {
   caption: string

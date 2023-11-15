@@ -23,6 +23,7 @@
     <CreatePost
       :firstname="auth.user.firstname"
       @close="toggleCreatePost"
+      @refetch-data="refetchData"
       ref="createPost"
     />
   </div>
@@ -40,7 +41,8 @@
       @refetch-data="refetchData"
     />
   </div>
-  <div class="-translate-y-[64rem]" ref="target"></div>
+  <div class="-translate-y-[64rem]" ref="target" />
+  <PostSkeleton v-for="i in 2" v-if="isFetching" />
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -50,19 +52,28 @@ import type { AuthType } from '@/AuthType'
 import type { PostsType } from '@/PostsType'
 import { onClickOutside, useIntersectionObserver } from '@vueuse/core'
 import axios from 'axios'
+import PostSkeleton from '../Shared/PostSkeleton.vue'
 
 const { auth } = defineProps<{
   auth: AuthType
 }>()
 
-const posts = ref<any>({ data: [] })
+const posts = ref<PostsType>({ data: [], links: null })
 const page = ref<number>(1)
+const isFetching = ref<boolean>(false)
 
 const fetchData = async () => {
-  const response = await axios.get(`/api/post?page=${page.value}`)
-  posts.value.data = [...posts.value.data, ...response.data.data]
-  posts.value.links = response.data.links
-  page.value++
+  try {
+    isFetching.value = true
+    const response = await axios.get(`/api/post?page=${page.value}`)
+    posts.value.data = [...posts.value.data, ...response.data.data]
+    posts.value.links = response.data.links
+    page.value++
+  } catch (error) {
+    console.error('Error fetching data:', error)
+  } finally {
+    isFetching.value = false
+  }
 }
 
 const refetchPost = async (postIndex) => {

@@ -67,7 +67,6 @@ class PostController extends Controller
     $post->image = $imageName;
     $post->save();
     return back()->with('success', 'Success edited post');
-
   }
 
   public function destroy(Post $id)
@@ -82,9 +81,7 @@ class PostController extends Controller
   public function index(Request $request)
   {
     $takePage = $request->input('take', 1);
-
     $posts = Post::latest()->paginate(10 * $takePage);
-
     return PostResource::collection($posts);
   }
 

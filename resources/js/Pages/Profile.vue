@@ -54,17 +54,26 @@
     <CreatePost
       :firstname="auth.user.firstname"
       @close="toggleCreatePost"
+      @refetch-data="refetchData"
       ref="createPost"
     />
   </div>
 
   <div
-    v-for="post in posts.data"
+    v-for="(post, index) in posts.data"
     class="card max-w-lg bg-neutral mx-auto mt-4"
     :key="post.id"
   >
-    <Post :post="post" :auth="auth" />
+    <Post
+      :post="post"
+      :auth="auth"
+      :postIndex="index"
+      @refetch-post="refetchPost"
+      @refetch-data="refetchData"
+    />
   </div>
+  <div class="-translate-y-[64rem]" ref="target" />
+  <PostSkeleton v-if="isFetching" />
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -73,13 +82,61 @@ import Post from '../Shared/Post.vue'
 import type { UserType } from '@/UserType'
 import type { AuthType } from '@/AuthType'
 import type { PostsType } from '@/PostsType'
-import { onClickOutside } from '@vueuse/core'
+import { onClickOutside, useIntersectionObserver } from '@vueuse/core'
+import axios from 'axios'
+import PostSkeleton from '../Shared/PostSkeleton.vue'
 
-const { posts, auth, profile } = defineProps<{
-  posts: PostsType
+const { auth, profile } = defineProps<{
   auth: AuthType
   profile: UserType
 }>()
+
+const posts = ref<PostsType>({ data: [], links: null })
+const page = ref<number>(1)
+const isFetching = ref<boolean>(false)
+
+const fetchData = async () => {
+  try {
+    isFetching.value = true
+    const response = await axios.get(
+      `/api/profile/${profile.id}?page=${page.value}`
+    )
+    posts.value.data = [...posts.value.data, ...response.data.data]
+    posts.value.links = response.data.links
+    page.value++
+  } catch (error) {
+    console.error('Error fetching data:', error)
+  } finally {
+    isFetching.value = false
+  }
+}
+
+const refetchPost = async (postIndex) => {
+  const response = await axios.get(
+    `/api/post/${posts.value.data[postIndex].id}`
+  )
+  posts.value.data[postIndex] = response.data.data
+}
+
+const refetchData = async () => {
+  const response = await axios.get(
+    `/api/profile/${profile.id}?take=${page.value - 1}`
+  )
+  posts.value.data = [...response.data.data]
+}
+
+const target = ref<HTMLElement | null>(null)
+const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
+  if (!isIntersecting) {
+    return
+  }
+  fetchData()
+  if (!posts.value.links.next) {
+    stop()
+  }
+})
+
+fetchData()
 
 const showCreatePost = ref<boolean>(false)
 const createPost = ref(null)

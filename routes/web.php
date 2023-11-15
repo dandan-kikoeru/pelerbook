@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
 
 /**
  * * API
+ * // Don't ask why I put it here
  */
 
 Route::middleware(['guest'])->group(function () {
@@ -30,6 +32,8 @@ Route::middleware(['auth'])->group(function () {
   Route::get('/api/post', [PostController::class, 'index']);
   Route::get('/api/post/{id}', [PostController::class, 'show']);
   Route::post('/api/like/{id}', [LikeController::class, 'like']);
+
+  Route::get('/api/profile/{id}', [ProfileController::class, 'index']);
 });
 
 Route::get('/login', function () {
@@ -78,12 +82,9 @@ Route::middleware(['auth'])->group(function () {
    * * Profile
    */
 
-  Route::get('/{id}', function ($id, User $user, Request $request) {
+  Route::get('/{id}', function ($id) {
     $user = User::find($id);
-    $posts = Post::where('user_id', $id)->latest()->get();
-
     return Inertia::render('Profile', [
-      'posts' => PostResource::collection($posts),
       'profile' => [
         'id' => $user->id,
         'firstname' => $user->firstname,
