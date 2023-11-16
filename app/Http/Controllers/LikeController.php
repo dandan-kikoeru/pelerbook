@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Like;
 use App\Models\Post;
-use Inertia\Inertia;
-use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
@@ -18,8 +16,8 @@ class LikeController extends Controller
 
     if (!$userAlreadyLiked->first()) {
       $like = [
-        "user_id" => $user->id,
-        "post_id" => $post->id
+        'user_id' => $user->id,
+        'post_id' => $post->id,
       ];
 
       Like::create($like);

@@ -1,15 +1,15 @@
 <?php
 
-use App\Models\Post;
-use App\Models\User;
-use Inertia\Inertia;
-use Illuminate\Http\Request;
-use App\Http\Resources\PostResource;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use App\Http\Resources\PostResource;
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /**
  * * API
@@ -58,7 +58,6 @@ Route::middleware(['auth'])->group(function () {
     return Inertia::render('Home');
   });
 
-
   Route::get('/settings', function () {
     return Inertia::render('Settings');
   });
@@ -92,7 +91,7 @@ Route::middleware(['auth'])->group(function () {
         'avatar' => $user->avatar,
         'cover' => $user->cover,
         'createdAt' => $user->created_at->format('F Y'),
-      ]
+      ],
     ]);
   });
 });

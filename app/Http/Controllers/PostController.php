@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use Inertia\Inertia;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
-use Image; // alias of Intervention\Image\ImageServiceProvider::class,
-
+use App\Models\Post;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Image;
 
 class PostController extends Controller
 {
@@ -23,10 +21,12 @@ class PostController extends Controller
 
     if ($request->hasFile('image')) {
       $request->validate([
-        'image' => ['mimes:jpeg,png,jpg,webp', 'max:2048']
+        'image' => ['mimes:jpeg,png,jpg,webp', 'max:2048'],
       ]);
       $imageName = '/images/' . $randId . '.webp';
-      Image::make($request->file('image'))->encode('webp', 90)->save(public_path($imageName));
+      Image::make($request->file('image'))
+        ->encode('webp', 90)
+        ->save(public_path($imageName));
     }
 
     Post::create([
@@ -41,12 +41,12 @@ class PostController extends Controller
   public function update(Request $request, $id)
   {
     $post = Post::find($id);
-    if (Auth()->user()->id !== $post->user_id) {
-      return abort(400);
+    if (auth()->user()->id !== $post->user_id) {
+      return abort(401);
     }
 
     $request->validate([
-      'caption' => ['required',],
+      'caption' => ['required'],
     ]);
 
     $imageName = null;
@@ -57,10 +57,12 @@ class PostController extends Controller
 
     if ($request->hasFile('image')) {
       $request->validate([
-        'image' => ['mimes:jpeg,png,jpg,webp', 'max:2048']
+        'image' => ['mimes:jpeg,png,jpg,webp', 'max:2048'],
       ]);
       $imageName = '/images/' . $post->id . '.webp';
-      Image::make($request->file('image'))->encode('webp', 90)->save(public_path($imageName));
+      Image::make($request->file('image'))
+        ->encode('webp', 90)
+        ->save(public_path($imageName));
     }
 
     $post->caption = htmlspecialchars($request->caption);
@@ -71,12 +73,12 @@ class PostController extends Controller
 
   public function destroy(Post $id)
   {
-    if (Auth()->user()->id = $id->user_id) {
+    if (auth()->user()->id = $id->user_id) {
       $id->likes()->delete();
       $id->delete();
       return back()->with('success', 'Success deleted post');
     }
-    return abort(400);
+    return abort(401);
   }
   public function index(Request $request)
   {

@@ -4,23 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Image; // alias of Intervention\Image\ImageServiceProvider::class,
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Image;
 
 class UserController extends Controller
 {
   public function login(Request $request)
   {
-    sleep(1);
     $credentials = $request->validate([
-      "email" => ['required', 'email'],
-      "password" => ['required', 'min:8'],
+      'email' => ['required', 'email'],
+      'password' => ['required', 'min:8'],
     ]);
 
     if (Auth::attempt($credentials)) {
       $request->session()->regenerate();
-      return redirect("/");
+      return redirect('/');
     }
 
     return back()->withErrors(['messages' => 'Invalid credentials']);
@@ -28,12 +27,11 @@ class UserController extends Controller
 
   public function register(Request $request)
   {
-    sleep(2);
     $credentials = $request->validate([
       'firstname' => ['required', 'regex:/^[A-Za-z]+$/'],
       'surname' => ['required', 'regex:/^[A-Za-z]+$/'],
       'email' => ['required', 'email', Rule::unique('users', 'email')],
-      'password' => ['required', 'min:8']
+      'password' => ['required', 'min:8'],
     ]);
     $user = User::create($credentials);
     Auth::login($user);
@@ -42,18 +40,16 @@ class UserController extends Controller
 
   public function logout()
   {
-    sleep(1);
     Auth::logout();
   }
 
   public function update(Request $request)
   {
-    // sleep(1);
-    $user = Auth()->user();
+    $user = auth()->user();
 
     if ($request->hasFile('avatar')) {
       $request->validate([
-        'avatar' => ['mimes:jpeg,png,jpg,webp', 'max:2048']
+        'avatar' => ['mimes:jpeg,png,jpg,webp', 'max:2048'],
       ]);
 
       $avatarName = $user->id . '.webp';
@@ -68,7 +64,7 @@ class UserController extends Controller
 
     if ($request->hasFile('cover')) {
       $request->validate([
-        'cover' => ['mimes:jpeg,png,jpg,webp', 'max:2048']
+        'cover' => ['mimes:jpeg,png,jpg,webp', 'max:2048'],
       ]);
 
       $coverName = $user->id . '.webp';
