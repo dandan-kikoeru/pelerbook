@@ -27,7 +27,7 @@
       <span class="material-symbols-outlined p-2 select-none">more_horiz</span>
     </div>
     <p v-html="post.caption" class="pb-2" />
-    <img :src="post.image" class="rounded-md"/>
+    <img :src="post.image" class="rounded-md" />
     <p v-if="post.likes" class="flex gap-1">
       <span class="material-symbols-outlined text-primary"> thumb_up </span
       >{{ post.likes }}

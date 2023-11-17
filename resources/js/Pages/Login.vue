@@ -51,7 +51,7 @@
             >
           </div>
           <div
-            @click="toggleRegister"
+            @click="toggleRegister()"
             class="btn btn-secondary normal-case w-2/3 mx-auto mt-2"
           >
             Create new account
@@ -63,10 +63,10 @@
 
   <div
     class="fixed top-0 w-screen h-screen bg-black/50 flex justify-center items-center z-50"
-    v-if="showRegister"
     id="register"
+    v-if="showRegister"
   >
-    <Register @close="toggleRegister" />
+    <Register @close="toggleRegister()" ref="register" />
   </div>
   <div class="toast toast-end" v-if="form.errors.messages">
     <Toast @close="form.errors.messages = null">
@@ -79,6 +79,7 @@ import { useForm } from '@inertiajs/vue3'
 import Register from '../Shared/Register.vue'
 import { ref } from 'vue'
 import Toast from '../Components/Toast.vue'
+import { onClickOutside, useToggle } from '@vueuse/core'
 
 defineOptions({
   layout: null,
@@ -93,22 +94,7 @@ const submit = () => {
   form.post('/api/user/login')
 }
 
-const showRegister = ref(false)
-
-const handleClick = (e: Event) => {
-  const register = document.getElementById('register')
-  if (e.target == register) {
-    return toggleRegister()
-  }
-}
-
-const toggleRegister = () => {
-  showRegister.value = !showRegister.value
-  if (!showRegister.value) {
-    return document.removeEventListener('click', handleClick)
-  }
-  setTimeout(() => {
-    document.addEventListener('click', handleClick)
-  }, 100)
-}
+const [showRegister, toggleRegister] = useToggle()
+const register = ref<HTMLElement | null>(null)
+onClickOutside(register, () => toggleRegister())
 </script>

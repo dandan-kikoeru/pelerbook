@@ -18,7 +18,6 @@
   <div
     class="fixed top-0 w-screen h-screen flex justify-center items-center bg-black/50 z-50"
     v-if="showCreatePost"
-    id="createpostpopup"
   >
     <CreatePost
       :firstname="auth.user.firstname"

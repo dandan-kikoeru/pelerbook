@@ -112,6 +112,7 @@
 
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3'
+import { useEventListener } from '@vueuse/core'
 const form = useForm<any>({
   firstname: '',
   surname: '',
@@ -123,5 +124,10 @@ const submit = () => {
   form.post('/api/user/register')
 }
 
-defineEmits(['close'])
+const emit = defineEmits(['close'])
+useEventListener(document, 'keydown', (e) => {
+  if (e.key === 'Escape') {
+    emit('close')
+  }
+})
 </script>

@@ -34,8 +34,16 @@
 <script setup lang="ts">
 import type { AuthType } from '@/AuthType'
 import DropdownLink from '../Components/DropdownLink.vue'
+import { useEventListener } from '@vueuse/core'
 
 defineProps<{
   auth: AuthType
 }>()
+const emit = defineEmits()
+
+useEventListener(document, 'keydown', (e) => {
+  if (e.key === 'Escape') {
+    emit('close')
+  }
+})
 </script>

@@ -8,6 +8,6 @@ export default defineConfig({
       input: ['resources/css/app.css', 'resources/js/app.ts'],
       refresh: true,
     }),
-    vue(3),
+    vue(),
   ],
 })

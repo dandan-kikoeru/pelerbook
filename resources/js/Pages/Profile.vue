@@ -49,7 +49,6 @@
   <div
     class="fixed top-0 w-screen h-screen flex justify-center items-center bg-black/50 z-50 rounded-xl"
     v-if="showCreatePost"
-    id="post"
   >
     <CreatePost
       :firstname="auth.user.firstname"

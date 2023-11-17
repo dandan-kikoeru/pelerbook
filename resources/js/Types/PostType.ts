@@ -4,8 +4,8 @@ export interface PostType {
   caption: string
   createdAt: string
   id: string
-  user: UserType
   likes: BigInteger
   likedByUser: boolean
   image: string
+  user: UserType
 }

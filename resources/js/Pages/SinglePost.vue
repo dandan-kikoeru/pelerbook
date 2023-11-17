@@ -5,11 +5,11 @@
       ' ' +
       post.data.user.surname +
       ' - ' +
-      removeHtmlTags(post.data.caption)
+      headTitle(post.data.caption)
     "
   />
   <div class="card max-w-lg bg-neutral shadow-xl mx-auto mt-4">
-    <Post :post="post.data" :auth="auth" />
+    <Post :post="post.data" :auth="auth" :postIndex="0" />
   </div>
 </template>
 <script setup lang="ts">
@@ -22,7 +22,14 @@ const { post, auth } = defineProps<{
   auth: AuthType
 }>()
 
-const removeHtmlTags = (input) => {
-  return input.replace(/<\/?[^>]+(>|$)/g, '')
+const headTitle = (input, maxLength = 64) => {
+  const textWithoutTags = input.replace(/<\/?[^>]+(>|$)/g, '')
+  const truncatedText = textWithoutTags
+    .slice(0, maxLength)
+    .replace(/\s+\S*$/, '')
+  if (textWithoutTags.length > truncatedText.length) {
+    return truncatedText + '...'
+  }
+  return truncatedText
 }
 </script>

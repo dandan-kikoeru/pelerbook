@@ -22,7 +22,9 @@
           />
         </div>
         <div class="flex">
-          <button class="btn btn-primary mx-auto mt-4" v-if="showNameSubmit">Save</button>
+          <button class="btn btn-primary mx-auto mt-4" v-if="showNameSubmit">
+            Save
+          </button>
         </div>
       </form>
       <div>
